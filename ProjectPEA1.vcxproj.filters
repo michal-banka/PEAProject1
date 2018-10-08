@@ -18,10 +18,10 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\SDIZO_17-18\SDiZO\Projekt\SDiZO_Projekt_1\Table.cpp">
+    <ClCompile Include="MatrixRepresentation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\SDIZO_17-18\SDiZO\Projekt\SDiZO_Projekt_1\TimeCounter.cpp">
+    <ClCompile Include="Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,10 +29,10 @@
     <ClInclude Include="Libs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\SDIZO_17-18\SDiZO\Projekt\SDiZO_Projekt_1\Table.h">
+    <ClInclude Include="MatrixRepresentation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\SDIZO_17-18\SDiZO\Projekt\SDiZO_Projekt_1\TimeCounter.h">
+    <ClInclude Include="Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

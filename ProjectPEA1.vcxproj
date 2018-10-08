@@ -139,14 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\SDIZO_17-18\SDiZO\Projekt\SDiZO_Projekt_1\Table.cpp" />
-    <ClCompile Include="..\..\..\SDIZO_17-18\SDiZO\Projekt\SDiZO_Projekt_1\TimeCounter.cpp" />
+    <ClCompile Include="MatrixRepresentation.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\SDIZO_17-18\SDiZO\Projekt\SDiZO_Projekt_1\Table.h" />
-    <ClInclude Include="..\..\..\SDIZO_17-18\SDiZO\Projekt\SDiZO_Projekt_1\TimeCounter.h" />
     <ClInclude Include="Libs.h" />
+    <ClInclude Include="MatrixRepresentation.h" />
+    <ClInclude Include="Menu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
