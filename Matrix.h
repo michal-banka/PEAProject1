@@ -1,21 +1,22 @@
 #pragma once
 #include "Libs.h"
-class Matrix
+class matrix
 {
 private:
 	int** tab;
 	int vertices;
 public:
-	Matrix();
-	//Matrix will be always square, becouse this will represent full graph and this is the most efficent
-	Matrix(int vertices);
-	Matrix(const Matrix& m);
-	Matrix(std::string filename);
-	~Matrix();
+	matrix();
+	//Matrix will be always square, becouse this will represent full graph
+	matrix(int vertices);
+	matrix(const matrix& m);
+	matrix(std::string filename);
+	~matrix();
 
 	int getVertices();
 	//void setTab(int** tab);
 	//void setVertices(int vertices);
+	bool isSymetric();
 
 	void addNVertex(int n);
 	void addVertex();
@@ -31,5 +32,5 @@ public:
 	//int kruskal();
 	//int bellman_ford(int from, int to, bool directed);
 
-	Matrix& operator= (const Matrix& m);
+	matrix& operator= (const matrix& m);
 };

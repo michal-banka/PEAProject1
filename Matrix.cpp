@@ -1,13 +1,19 @@
 #include "MatrixRepresentation.h"
 
 
-Matrix::Matrix()
+matrix::matrix()
 {
 	this->vertices = 0;
 	this->tab = nullptr;
 }
 
-Matrix::Matrix(int vertices)
+matrix::matrix(int vertices, int** tab)
+{
+	this->vertices = vertices;
+	this->tab = tab;
+}
+
+matrix::matrix(int vertices)
 {
 	this->vertices = vertices;
 	this->tab = new int*[vertices];
@@ -17,7 +23,7 @@ Matrix::Matrix(int vertices)
 	}
 }
 
-Matrix::Matrix(const Matrix& m)
+matrix::matrix(const matrix& m)
 {
 	this->vertices = m.vertices;
 
@@ -37,11 +43,14 @@ Matrix::Matrix(const Matrix& m)
 
 }
 
-Matrix::Matrix(std::string filename)
+matrix::matrix(std::string filename)
 {
+	this->vertices = 0;
+	this->tab = nullptr;
+
 	int number = 0;
 	std::ifstream read;
-	read.open("filename");
+	read.open(filename);
 	if (read.is_open())
 	{
 		if (!read.eof())
@@ -65,10 +74,10 @@ Matrix::Matrix(std::string filename)
 		{
 			read >> number;
 			tab[i][j] = number;
-			if (++j > vertices)
+			if (++j > vertices - 1)
 			{
 				j = 0;
-				if (++i > vertices)
+				if (++i > vertices - 1)
 				{
 					break;
 				}
@@ -81,7 +90,7 @@ Matrix::Matrix(std::string filename)
 	}
 }
 
-Matrix::~Matrix()
+matrix::~matrix()
 {
 	for (int i = 0; i < vertices; i++)
 	{
@@ -91,12 +100,28 @@ Matrix::~Matrix()
 
 }
 
-int Matrix::getVertices()
+int matrix::getVertices()
 {
 	return this->vertices;
 }
 
-void Matrix::addNVertex(int n)
+bool matrix::isSymetric()
+{
+	for (int i = 1; i < vertices; i++)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			std::cout << tab[i][j] << " " << tab[j][i] << std::endl;
+				if (tab[i][j] != tab[j][i])
+				{
+					return false;
+				}
+		}
+	}
+	return true;
+}
+
+void matrix::addNVertex(int n)
 {
 	//temporary array
 	int** temp = new int*[vertices + n];
@@ -154,7 +179,7 @@ void Matrix::setVertices(int vertices)
 }*/
 
 
-void Matrix::addVertex()
+void matrix::addVertex()
 {
 	//temporary array
 	int** temp = new int*[vertices + 1];
@@ -186,7 +211,7 @@ void Matrix::addVertex()
 	tab = temp;
 }
 
-void Matrix::removeVertex()
+void matrix::removeVertex()
 {
 	if (vertices <= 0) return;
 	int n = -1;
@@ -200,7 +225,7 @@ void Matrix::removeVertex()
 	removeVertex(n);
 }
 
-void Matrix::removeVertex(int n)
+void matrix::removeVertex(int n)
 {
 	if (n < 0 || n >= vertices || vertices <= 0) return;
 
@@ -246,7 +271,7 @@ void Matrix::removeVertex(int n)
 	this->tab = temp;
 }
 
-void Matrix::fillVertexConnections(int vertex)
+void matrix::fillVertexConnections(int vertex)
 {
 	if (vertex < 0 || vertex >= vertices) return;
 
@@ -269,7 +294,7 @@ void Matrix::fillVertexConnections(int vertex)
 	}
 }
 
-void Matrix::show()
+void matrix::show()
 {
 
 	for (int i = 0; i < 32; i++)
@@ -784,7 +809,7 @@ int Matrix::bellman_ford(int from, int to, bool directed)
 }
 */
 
-Matrix& Matrix::operator=(const Matrix& m)
+matrix& matrix::operator=(const matrix& m)
 {
 	if (this == &m)
 	{

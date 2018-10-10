@@ -1,13 +1,12 @@
 #pragma once
 #include "MatrixRepresentation.h"
 
-class Menu
+class menu
 {
 private:
-	Matrix graph;
-
+	matrix graph;
 public:
-	Menu();
-	~Menu();
+	menu();
+	~menu();
 };
 

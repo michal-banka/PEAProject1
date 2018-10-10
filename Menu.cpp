@@ -2,11 +2,11 @@
 
 
 
-Menu::Menu()
+menu::menu()
 {
 }
 
 
-Menu::~Menu()
+menu::~menu()
 {
 }
