@@ -98,37 +98,6 @@ matrix::matrix(std::string filename)
 		{
 			std::cout << "Read SIZE from file error." << std::endl;
 		}
-		
-		/*if (!read.eof())
-		{
-			read >> number;
-			this->vertices = number;
-			this->tab = new int*[vertices];
-			for (int i = 0; i < vertices; i++)
-			{
-				this->tab[i] = new int[vertices];
-				
-				for (int j = 0 ; j < vertices; j++)
-				{
-					tab[i][j] = 0;
-				}
-			}
-		}
-
-		
-		while (!read.eof())
-		{
-			read >> number;
-			tab[i][j] = number;
-			if (++j > vertices - 1)
-			{
-				j = 0;
-				if (++i > vertices - 1)
-				{
-					break;
-				}
-			}
-		}*/
 	}
 	else
 	{
@@ -402,92 +371,99 @@ void matrix::show()
 	std::cout << std::endl;
 }
 
-void matrix::hamiltionianCycleBruteForce(std::vector<int>& cycle, std::vector<int>& minCycle)
+std::vector<int> matrix::hamiltionianCycleBruteForceInit()
 {
-	std::cout << "Cycle 1: ";
-	for (int e : cycle)
+	std::vector<int> empty;
+	std::vector<int> min;
+	int minDist = INT_MAX;
+	min = hamiltionianCycleBruteForce(empty, minDist,min);
+
+	std::cout << "Minimal cycle with brute force method: ";
+	for (int element : min)
 	{
-		std::cout << e << " ";
+		std::cout << element << " <-> ";
+	}
+	std::cout << min[0];
+	std::cout << std::endl;
+	std::cout << "Minimal distance: " << minDist;
+
+
+	return empty;
+}
+
+std::vector<int> matrix::hamiltionianCycleBruteForce(std::vector<int> cycle, int& minDist, std::vector<int> minCycle)
+{	
+	/*std::cout << "CYCLE: ";
+	for (int element : cycle)
+	{
+		std::cout << element << " ";
 	}
 	std::cout << std::endl;
-	//cycle and minCycle stores indexes of vertices 
-	int vertex = 0;
-	//if is on the last vertex
+	std::cin.get();*/
+	//std::cout << "cycle.size = " << cycle.size() << ", vertices = " << vertices << std::endl;
+	//std::vector<int> minCycle;
+
+	//check if it's full cycle
 	if (cycle.size() == vertices)
 	{
-		std::cout << "Hamilton Tree!" << std::endl;
-		int dist = 0;
-		int distMin = 0;
-		//first distance is unknown
-		if (minCycle.empty())
+		int distance = 0;
+		for (int i = 0 ; i < cycle.size() - 1; i++)
 		{
-			int distMin = INT_MAX;
+			distance += tab[cycle[i]][cycle[i + 1]];
 		}
+		distance += tab[cycle[cycle.size() - 1]][cycle[0]];
 
-		for (int i = 0; i < cycle.size() - 1; i++)
+		if (distance < minDist)
 		{
-			dist += tab[cycle[i]][cycle[i+1]];
-			if (!minCycle.empty()) distMin += tab[minCycle[i]][minCycle[i + 1]];
-		}
-
-		//check if this cycle is shorter than minimal one
-		std::cout << "Check if shorter!" << std::endl;
-		std::cout << "distMin = " << distMin << ", dist = " << dist << ", tab[cycle[cycle.size() - 1]][cycle[0]] = " << tab[cycle[cycle.size() - 1]][cycle[0]] << std::endl;
-		if (distMin > dist + tab[cycle[cycle.size() - 1]][cycle[0]])
-		{
+			/*std::cout << "CYCLE: ";
+			for (int i = 0; i < cycle.size(); i++)
+			{
+				std::cout << cycle[i] << " ";
+			}
+			std::cout << std::endl;
+			std::cout << "------------------------------------" << std::endl;*/
+			minDist = distance;
 			minCycle = cycle;
+			return cycle;
 		}
-	
+		else
+		{
+			return minCycle;
+		}
 	}
 
-	
-
-	//used when hamiltonian cycle is not ready yet
-	//find first not used vertex
-	//so sort copy of cycle, it's little vector (size up to 30) so it won't last long with any algorithm
-	std::vector<int> cycleCopy(cycle);
-	std::sort(cycleCopy.begin(), cycleCopy.end(), [](int n, int m)-> bool {return n < m; });
-	//now find first which is not 1 bigger than previous
-	if (cycleCopy.size() >= 2 && cycleCopy.size() < vertices)
+	bool used = false;
+	//choose next vertex to add
+	for(int i = 0 ; i < vertices; i++)
 	{
-		for (int i = 0; i < cycleCopy.size() - 1; i++)
+		/*std::cout << "CYCLE: ";
+		for (int i = 0; i < cycle.size(); i++)
 		{
-			if (cycleCopy[i] + 1 != cycleCopy[i+1])
+			std::cout << cycle[i] << " ";
+		}
+		std::cout << std::endl << "vertex tested to put: " << i;
+		std::cin.get();*/
+		used = false;
+
+		//check if vertex is not used
+		for (int j : cycle)
+		{
+			if (i == j)
 			{
-				vertex = cycleCopy[i] + 1;
-				cycle.push_back(vertex);
+				used = true;
+				break;
 			}
 		}
-		cycle.push_back(cycleCopy[cycleCopy.size() - 1] + 1);
-		
+		if (!used || cycle.empty()) 
+		{
+			/*std::cout << "vertex added: " << i << std::endl;
+			std::cout << "------------------------------------" << std::endl;*/
+			cycle.push_back(i);
+			minCycle = hamiltionianCycleBruteForce(cycle, minDist,minCycle);
+			cycle.pop_back();
+		}
 	}
-	else if (cycleCopy.size() == 1)
-	{
-		vertex = cycleCopy[cycleCopy.size() - 1] + 1;
-		cycle.push_back(vertex);
-	}
-	else
-	{
-		vertex = 0;
-		cycle.push_back(vertex);
-	}
-	//add vertex to cycle and recur function 
-	std::cout << "Cycle 2: ";
-	for (int e : cycle)
-	{
-		std::cout << e << " ";
-	}
-	std::cout << std::endl;
-
-	std::cout << "Minimum Cycle: ";
-	for (int e : minCycle)
-	{
-		std::cout << e << " ";
-	}
-	std::cout << std::endl;
-
-	std::cin.get();
-	hamiltionianCycleBruteForce(cycle, cycleCopy);
+	return minCycle;
 }
 
 /*int Matrix::dijkstra(int from, int to, bool directed)

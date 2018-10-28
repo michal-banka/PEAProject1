@@ -6,6 +6,8 @@ private:
 	int** tab;
 	//Matrix will be always square, becouse this project represents only full graphs
 	int vertices;
+
+	std::vector<int> hamiltionianCycleBruteForce(std::vector<int> cycle, int& minDist, std::vector<int> minCycle);
 public:
 	matrix();
 	matrix(int vertices, int** tab);
@@ -29,7 +31,8 @@ public:
 	void fillVertexConnectionsRandom(int vertex, int rangeDown, int rangeUp);
 
 	void show();
-	void hamiltionianCycleBruteForce(std::vector<int>& cycle, std::vector<int>& minCycle);
+
+	std::vector<int> hamiltionianCycleBruteForceInit();
 	//int dijkstra(int from, int to, bool directed);
 	//int prim(int from);
 	//int prim2(int from);
