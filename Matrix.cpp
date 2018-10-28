@@ -47,13 +47,59 @@ matrix::matrix(std::string filename)
 {
 	this->vertices = 0;
 	this->tab = nullptr;
-
-	int number = 0;
+	int i = 0, j = 0;
+	int value = 0;
+	int size = 0;
 	std::ifstream read;
 	read.open(filename);
 	if (read.is_open())
 	{
-		if (!read.eof())
+		read >> size;
+
+		if (!read.fail())
+		{
+			this->vertices = size;
+
+			//init tab with 0
+			tab = new int*[vertices];
+			for (int i = 0 ; i < vertices; i++)
+			{
+				tab[i] = new int[vertices];
+				for (int j = 0; j < vertices; j++)
+				{
+					tab[i][j] = 0;
+				}
+			}
+
+			//get values from file
+			for (int k = 0; k < vertices * vertices; k++)
+			{
+				read >> value;
+				if (!read.fail())
+				{
+					this->tab[i][j] = value;
+					if (++j > vertices - 1)
+					{
+						j = 0;
+						if (++i > vertices - 1)
+						{
+							break;
+						}
+					}
+				}
+				else
+				{
+					std::cout << "Read VALUE from file error." << std::endl;
+					break;
+				}
+			}
+		}
+		else
+		{
+			std::cout << "Read SIZE from file error." << std::endl;
+		}
+		
+		/*if (!read.eof())
 		{
 			read >> number;
 			this->vertices = number;
@@ -69,7 +115,7 @@ matrix::matrix(std::string filename)
 			}
 		}
 
-		int i = 0, j = 0;
+		
 		while (!read.eof())
 		{
 			read >> number;
@@ -82,7 +128,7 @@ matrix::matrix(std::string filename)
 					break;
 				}
 			}
-		}
+		}*/
 	}
 	else
 	{
