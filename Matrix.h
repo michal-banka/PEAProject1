@@ -4,16 +4,19 @@ class matrix
 {
 private:
 	int** tab;
+	//Matrix will be always square, becouse this project represents only full graphs
 	int vertices;
 public:
 	matrix();
-	//Matrix will be always square, becouse this will represent full graph
+	matrix(int vertices, int** tab);
 	matrix(int vertices);
 	matrix(const matrix& m);
 	matrix(std::string filename);
 	~matrix();
 
 	int getVertices();
+	int** getTab();
+	int getElement(int x, int y);
 	//void setTab(int** tab);
 	//void setVertices(int vertices);
 	bool isSymetric();
@@ -23,9 +26,10 @@ public:
 	void removeVertex();
 	void removeVertex(int n);
 	void fillVertexConnections(int vertex);
+	void fillVertexConnectionsRandom(int vertex, int rangeDown, int rangeUp);
 
 	void show();
-
+	void hamiltionianCycleBruteForce(std::vector<int>& cycle, std::vector<int>& minCycle);
 	//int dijkstra(int from, int to, bool directed);
 	//int prim(int from);
 	//int prim2(int from);

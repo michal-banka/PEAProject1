@@ -1,4 +1,4 @@
-#include "MatrixRepresentation.h"
+#include "Matrix.h"
 
 
 matrix::matrix()
@@ -105,13 +105,27 @@ int matrix::getVertices()
 	return this->vertices;
 }
 
+int** matrix::getTab()
+{
+	return this->tab;
+}
+
+int matrix::getElement(int x, int y)
+{
+	if(x >= 0 && x < vertices && y >= 0 && y < vertices)
+	{
+		return this->tab[x][y];
+	}
+
+	return 0;
+}
+
 bool matrix::isSymetric()
 {
 	for (int i = 1; i < vertices; i++)
 	{
 		for (int j = 0; j < i; j++)
 		{
-			std::cout << tab[i][j] << " " << tab[j][i] << std::endl;
 				if (tab[i][j] != tab[j][i])
 				{
 					return false;
@@ -294,6 +308,19 @@ void matrix::fillVertexConnections(int vertex)
 	}
 }
 
+void matrix::fillVertexConnectionsRandom(int vertex, int rangeDown, int rangeUp)
+{
+	for (int i = 0 ; i < vertices; i++)
+	{
+		if (i != vertex)
+		{
+			int num = rangeDown + rand() % (rangeUp + 1 - rangeDown);
+			tab[i][vertex] = num;
+			tab[vertex][i] = num;
+		}
+	}
+}
+
 void matrix::show()
 {
 
@@ -327,6 +354,94 @@ void matrix::show()
 		std::cout << (char)219;
 	}
 	std::cout << std::endl;
+}
+
+void matrix::hamiltionianCycleBruteForce(std::vector<int>& cycle, std::vector<int>& minCycle)
+{
+	std::cout << "Cycle 1: ";
+	for (int e : cycle)
+	{
+		std::cout << e << " ";
+	}
+	std::cout << std::endl;
+	//cycle and minCycle stores indexes of vertices 
+	int vertex = 0;
+	//if is on the last vertex
+	if (cycle.size() == vertices)
+	{
+		std::cout << "Hamilton Tree!" << std::endl;
+		int dist = 0;
+		int distMin = 0;
+		//first distance is unknown
+		if (minCycle.empty())
+		{
+			int distMin = INT_MAX;
+		}
+
+		for (int i = 0; i < cycle.size() - 1; i++)
+		{
+			dist += tab[cycle[i]][cycle[i+1]];
+			if (!minCycle.empty()) distMin += tab[minCycle[i]][minCycle[i + 1]];
+		}
+
+		//check if this cycle is shorter than minimal one
+		std::cout << "Check if shorter!" << std::endl;
+		std::cout << "distMin = " << distMin << ", dist = " << dist << ", tab[cycle[cycle.size() - 1]][cycle[0]] = " << tab[cycle[cycle.size() - 1]][cycle[0]] << std::endl;
+		if (distMin > dist + tab[cycle[cycle.size() - 1]][cycle[0]])
+		{
+			minCycle = cycle;
+		}
+	
+	}
+
+	
+
+	//used when hamiltonian cycle is not ready yet
+	//find first not used vertex
+	//so sort copy of cycle, it's little vector (size up to 30) so it won't last long with any algorithm
+	std::vector<int> cycleCopy(cycle);
+	std::sort(cycleCopy.begin(), cycleCopy.end(), [](int n, int m)-> bool {return n < m; });
+	//now find first which is not 1 bigger than previous
+	if (cycleCopy.size() >= 2 && cycleCopy.size() < vertices)
+	{
+		for (int i = 0; i < cycleCopy.size() - 1; i++)
+		{
+			if (cycleCopy[i] + 1 != cycleCopy[i+1])
+			{
+				vertex = cycleCopy[i] + 1;
+				cycle.push_back(vertex);
+			}
+		}
+		cycle.push_back(cycleCopy[cycleCopy.size() - 1] + 1);
+		
+	}
+	else if (cycleCopy.size() == 1)
+	{
+		vertex = cycleCopy[cycleCopy.size() - 1] + 1;
+		cycle.push_back(vertex);
+	}
+	else
+	{
+		vertex = 0;
+		cycle.push_back(vertex);
+	}
+	//add vertex to cycle and recur function 
+	std::cout << "Cycle 2: ";
+	for (int e : cycle)
+	{
+		std::cout << e << " ";
+	}
+	std::cout << std::endl;
+
+	std::cout << "Minimum Cycle: ";
+	for (int e : minCycle)
+	{
+		std::cout << e << " ";
+	}
+	std::cout << std::endl;
+
+	std::cin.get();
+	hamiltionianCycleBruteForce(cycle, cycleCopy);
 }
 
 /*int Matrix::dijkstra(int from, int to, bool directed)

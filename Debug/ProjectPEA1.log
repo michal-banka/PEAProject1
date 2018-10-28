@@ -1,5 +1,13 @@
-﻿  MatrixRepresentation.cpp
-d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrixrepresentation.cpp(296): warning C4309: 'static_cast': truncation of constant value
-d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrixrepresentation.cpp(299): warning C4309: 'static_cast': truncation of constant value
-d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrixrepresentation.cpp(303): warning C4309: 'static_cast': truncation of constant value
+﻿  Matrix.cpp
+d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(329): warning C4309: 'static_cast': truncation of constant value
+d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(332): warning C4309: 'static_cast': truncation of constant value
+d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(336): warning C4309: 'static_cast': truncation of constant value
+d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(381): warning C4018: '<': signed/unsigned mismatch
+d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(405): warning C4018: '<': signed/unsigned mismatch
+d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(407): warning C4018: '<': signed/unsigned mismatch
+  Menu.cpp
+  Source.cpp
+d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\source.cpp(6): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating Code...
+d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(445): warning C4717: 'matrix::hamiltionianCycleBruteForce': recursive on all control paths, function will cause runtime stack overflow
   ProjectPEA1.vcxproj -> D:\Informatyka korepetycje\Studia\PEA_18-19\ProjectPEA1\Debug\ProjectPEA1.exe

@@ -1,5 +1,5 @@
 #pragma once
-#include "MatrixRepresentation.h"
+#include "Matrix.h"
 
 class menu
 {

@@ -5,3 +5,5 @@
 #include <ctime>
 #include <vector>
 #include <fstream>
+#include <algorithm>
+#include <numeric>
