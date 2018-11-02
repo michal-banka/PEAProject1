@@ -143,12 +143,14 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Table.cpp" />
+    <ClCompile Include="Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libs.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Table.h" />
+    <ClInclude Include="Tree.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data.txt" />

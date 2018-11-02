@@ -1,5 +1,6 @@
 #pragma once
 #include "Libs.h"
+#include "Tree.h"
 class matrix
 {
 private:
@@ -33,11 +34,8 @@ public:
 	void show();
 
 	std::vector<int> hamiltionianCycleBruteForceInit();
-	//int dijkstra(int from, int to, bool directed);
-	//int prim(int from);
-	//int prim2(int from);
-	//int kruskal();
-	//int bellman_ford(int from, int to, bool directed);
+	std::vector<int> branchAndBound(Tree* parent);
+
 
 	matrix& operator= (const matrix& m);
 };
