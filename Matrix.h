@@ -4,11 +4,13 @@
 class matrix
 {
 private:
+	//Matrix will be always square
 	int** tab;
-	//Matrix will be always square, becouse this project represents only full graphs
 	int vertices;
 
+	int lowerBound(std::vector<int> path);
 	std::vector<int> hamiltionianCycleBruteForce(std::vector<int> cycle, int& minDist, std::vector<int> minCycle);
+
 public:
 	matrix();
 	matrix(int vertices, int** tab);
@@ -34,7 +36,7 @@ public:
 	void show();
 
 	std::vector<int> hamiltionianCycleBruteForceInit();
-	std::vector<int> branchAndBound(Tree* parent);
+	std::vector<int> branchAndBound(std::vector<int> cycle, int& minDist, std::vector<int> minCycle);
 
 
 	matrix& operator= (const matrix& m);

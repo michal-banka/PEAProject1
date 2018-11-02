@@ -115,6 +115,114 @@ matrix::~matrix()
 
 }
 
+int matrix::lowerBound(std::vector<int> path)
+{
+	//if cycle == 0 we can't predict correctly
+	if (path.empty()) return INT_MAX;
+
+	int lb = 0;
+	int minimum = INT_MAX;
+	//add lengths of existing paths
+	for (int i = 0 ; i < path.size() - 1; i++)
+	{
+		lb += tab[path[i]][path[i + 1]];
+	}
+
+	//add the smallest possible edge to bound
+	//possible are only not used vertices (and beggining vertex if we aren't connecting the last vertex in cycle)
+
+	for(int i = 0; i < vertices; i++)
+	{
+		//alghoritm library and lambda expression used
+		//	if 'i' is vertex of given path (we will check only the last vertex of path but it must be done deeper)
+		if (std::any_of(path.begin(), path.end(), [i](int element) {return element == i; }))	
+		{
+			//must be here to prevent from out of range exception
+			if (i == path[path.size() - 1])
+			{
+				for(int j = 0 ; j < vertices; j++)
+				{
+					//conditions:
+					//1. not connected to itself
+					//2. the smallest
+					//3. not part of existing path
+					if (tab[i][j] != 0 && tab[i][j] < minimum && std::none_of(path.begin(), path.end(), [j](int element) {return element == j; }))
+					{
+						minimum = tab[i][j];
+					}
+				}
+				lb += minimum;
+			}
+		}
+		//if it's not found in path
+		//possible vertices are: any which is not in path yet and beginning vertex
+		else
+		{
+			for (int j = 0; j < vertices; j++)
+			{
+				if (tab[i][j] != 0 && tab[i][j] < minimum && 
+					(std::none_of(path.begin(), path.end(), [j](int element) {return element == j; }) || j == path[path.size() - 1])
+				   )
+				{
+					minimum = tab[i][j];
+				}
+			}
+			lb += minimum;
+		}
+	}
+
+	return lb;
+}
+
+std::vector<int> matrix::hamiltionianCycleBruteForce(std::vector<int> cycle, int& minDist, std::vector<int> minCycle)
+{
+	//check if it's full cycle
+	if (cycle.size() == vertices)
+	{
+		int distance = 0;
+		for (int i = 0; i < cycle.size() - 1; i++)
+		{
+			distance += tab[cycle[i]][cycle[i + 1]];
+		}
+		distance += tab[cycle[cycle.size() - 1]][cycle[0]];
+
+		if (distance < minDist)
+		{
+			minDist = distance;
+			minCycle = cycle;
+			return cycle;
+		}
+		else
+		{
+			return minCycle;
+		}
+	}
+
+	bool used = false;
+	//choose next vertex to add
+	for (int i = 0; i < vertices; i++)
+	{
+		used = false;
+
+		//check if vertex is not used
+		for (int j : cycle)
+		{
+			if (i == j)
+			{
+				used = true;
+				break;
+			}
+		}
+		if (!used || cycle.empty())
+		{
+			cycle.push_back(i);
+			minCycle = hamiltionianCycleBruteForce(cycle, minDist, minCycle);
+			cycle.pop_back();
+		}
+	}
+	return minCycle;
+}
+
 int matrix::getVertices()
 {
 	return this->vertices;
@@ -391,35 +499,14 @@ std::vector<int> matrix::hamiltionianCycleBruteForceInit()
 	return empty;
 }
 
-std::vector<int> matrix::branchAndBound(Tree* subtree)
+std::vector<int> matrix::branchAndBound(std::vector<int> cycle, int& minDist, std::vector<int> minCycle)
 {
-	//add vertices as children which are not used yet
-	for(int i = 0 ; i < vertices; i++)
+	//check if subsolution has number of vertices = vertices-1
+	if (cycle.size() == vertices - 1)
 	{
-		bool found = false;
-		for (int j = 0; j < subtree->getSubsolution().size(); ++j)
-		{
-			if (subtree->getSubsolution()[j] == vertices)
-			{
-				found = true;
-			}
-		}
-
-		if (!found)
-		{
-			//subtree->addChild(new Tree(subtree->getChildren()[i], nullptr, );
-		}
-	}
-	return std::vector<int>(4);
-}
-
-std::vector<int> matrix::hamiltionianCycleBruteForce(std::vector<int> cycle, int& minDist, std::vector<int> minCycle)
-{	
-	//check if it's full cycle
-	if (cycle.size() == vertices)
-	{
+		//if it 
 		int distance = 0;
-		for (int i = 0 ; i < cycle.size() - 1; i++)
+		for (int i = 0; i < cycle.size() - 1; i++)
 		{
 			distance += tab[cycle[i]][cycle[i + 1]];
 		}
@@ -439,7 +526,7 @@ std::vector<int> matrix::hamiltionianCycleBruteForce(std::vector<int> cycle, int
 
 	bool used = false;
 	//choose next vertex to add
-	for(int i = 0 ; i < vertices; i++)
+	for (int i = 0; i < vertices; i++)
 	{
 		used = false;
 
@@ -452,15 +539,17 @@ std::vector<int> matrix::hamiltionianCycleBruteForce(std::vector<int> cycle, int
 				break;
 			}
 		}
-		if (!used || cycle.empty()) 
+		if (!used || cycle.empty())
 		{
 			cycle.push_back(i);
-			minCycle = hamiltionianCycleBruteForce(cycle, minDist,minCycle);
+			minCycle = hamiltionianCycleBruteForce(cycle, minDist, minCycle);
 			cycle.pop_back();
 		}
 	}
 	return minCycle;
 }
+
+
 
 
 matrix& matrix::operator=(const matrix& m)
