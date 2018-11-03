@@ -133,6 +133,8 @@ int matrix::lowerBound(std::vector<int> path)
 
 	for(int i = 0; i < vertices; i++)
 	{
+		minimum = INT_MAX;
+
 		//alghoritm library and lambda expression used
 		//	if 'i' is vertex of given path (we will check only the last vertex of path but it must be done deeper)
 		if (std::any_of(path.begin(), path.end(), [i](int element) {return element == i; }))	
@@ -160,8 +162,9 @@ int matrix::lowerBound(std::vector<int> path)
 		{
 			for (int j = 0; j < vertices; j++)
 			{
-				if (tab[i][j] != 0 && tab[i][j] < minimum && 
-					(std::none_of(path.begin(), path.end(), [j](int element) {return element == j; }) || j == path[path.size() - 1])
+				if (tab[i][j] != 0 && tab[i][j] < minimum &&
+					//is this needed?
+					(std::none_of(path.begin(), path.end(), [j](int element) {return element == j; }) || j == path[/*path.size() - 1*/ 0])
 				   )
 				{
 					minimum = tab[i][j];
@@ -174,7 +177,90 @@ int matrix::lowerBound(std::vector<int> path)
 	return lb;
 }
 
-std::vector<int> matrix::hamiltionianCycleBruteForce(std::vector<int> cycle, int& minDist, std::vector<int> minCycle)
+int matrix::upperBound()
+{
+	int k = 1;
+	int ub = 0;
+	for(int i = 0; i < vertices - 1; i++)
+	{
+		for (int j = k; j < vertices; j++)
+		{
+			ub += tab[i][j];
+		}
+		k++;
+	}
+	return ub;
+}
+
+
+void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle)
+{
+	//checks if cycle has vertices-1 of vertices (last one is also known then)
+	if (cycle.size() == vertices - 1)
+	{
+		//add last vertex and caluclate distance which is the same as lowerBound of cycle
+		for (int i = 0; i < vertices; i++)
+		{
+			if (std::none_of(cycle.begin(), cycle.end(), [i](int elem) {return i == elem; }))
+			{
+				int dist = 0;
+				cycle.push_back(i);
+				//distance calucation
+				//distance() function has better complexity than lowerBound()
+				dist = distance(cycle);
+
+				//if this is the shortest found cycle
+				//upperBound is this distance/lowerBound now
+				if (dist < upperBound)
+				{
+					//if this is the shortest found cycle
+					//upperBound is this distance/lowerBound now
+					upperBound = dist;
+					minCycle = cycle;
+				}
+				return;
+			}
+		}
+	}
+
+	//choose next vertex to add
+	//this will represent children: last vertex (new) and lowerbound for each of them
+	std::vector<std::pair<int, int>> possible;
+	
+	for (int i = 0; i < vertices; i++)
+	{
+		//alghoritm library and lambda expression
+		//checks if vertex 'i' is not in actual path
+		if (std::none_of(cycle.begin(), cycle.end(), [i](int vertex) {return i == vertex; }))
+		{
+			//if it isn't then push it to possible vertices and compute lowerBound
+			cycle.push_back(i);
+			possible.push_back(std::make_pair(i, lowerBound(cycle)));
+			cycle.pop_back();
+		}
+	}
+	//now when we have all possible vertices,
+	//sort them by lowerBound value which is second element in pair
+	std::sort(possible.begin(), possible.end(), [](std::pair<int, int> x, std::pair<int, int> y) {return x.second < y.second; });
+
+	//now when sorted start going deeper into tree
+	//every branch should have lowerBound < upperBound
+	//if it hasn't, cut the branch
+	for (std::pair<int, int> element : possible)
+	{
+		if (element.second < upperBound)
+		{
+			
+			cycle.push_back(element.first);
+			branchAndBound(cycle, upperBound, minCycle);
+			cycle.pop_back();
+		}
+	}
+	//if every branch was checked go back higher on tree
+}
+
+
+std::vector<int> matrix::bruteForce(std::vector<int> cycle, int& minDist, std::vector<int> minCycle)
 {
 	//check if it's full cycle
 	if (cycle.size() == vertices)
@@ -216,7 +302,7 @@ std::vector<int> matrix::hamiltionianCycleBruteForce(std::vector<int> cycle, int
 		if (!used || cycle.empty())
 		{
 			cycle.push_back(i);
-			minCycle = hamiltionianCycleBruteForce(cycle, minDist, minCycle);
+			minCycle = bruteForce(cycle, minDist, minCycle);
 			cycle.pop_back();
 		}
 	}
@@ -444,6 +530,20 @@ void matrix::fillVertexConnectionsRandom(int vertex, int rangeDown, int rangeUp)
 	}
 }
 
+int matrix::distance(std::vector<int> vector)
+{
+	if (vector.empty()) return -1;
+	int distance = 0;
+
+	for (int i = 0; i < vector.size() - 1; ++i)
+	{
+		distance += tab[vector[i]][vector[i + 1]];
+	}
+	distance += tab[vector[vector.size() - 1]][0];
+
+	return distance;
+}
+
 void matrix::show()
 {
 
@@ -479,78 +579,55 @@ void matrix::show()
 	std::cout << std::endl;
 }
 
-std::vector<int> matrix::hamiltionianCycleBruteForceInit()
+std::vector<int> matrix::bruteForceInit()
 {
-	std::vector<int> empty;
 	std::vector<int> min;
+	if (vertices <= 0) return min;
+
+	//init path is just a first vertex of cycle pushed into vector
+	//there is no sense of checking every cycle with different first vertex
+	//becouse it's cycle 
+	std::vector<int> initPath;
+	initPath.push_back(0);
+
 	int minDist = INT_MAX;
-	min = hamiltionianCycleBruteForce(empty, minDist,min);
+	min = bruteForce(initPath, minDist,min);
 
 	std::cout << "Minimal cycle with brute force method: ";
 	for (int element : min)
 	{
 		std::cout << element << " <-> ";
 	}
-	std::cout << min[0];
-	std::cout << std::endl;
-	std::cout << "Minimal distance: " << minDist;
+	std::cout << min[0] << std::endl;
+	std::cout << "Minimal distance: " << minDist << std::endl;
 
-
-	return empty;
+	return min;
 }
 
-std::vector<int> matrix::branchAndBound(std::vector<int> cycle, int& minDist, std::vector<int> minCycle)
+std::vector<int> matrix::branchAndBoundInit()
 {
-	//check if subsolution has number of vertices = vertices-1
-	if (cycle.size() == vertices - 1)
+	std::vector<int> min;
+	if (vertices <= 0) return min;
+
+	//init path is just a first vertex of cycle pushed into vector
+	//there is no sense of checking every cycle with different first vertex
+	//becouse it's cycle 
+	std::vector<int> initPath;
+	initPath.push_back(0);
+
+	int ub = upperBound();
+	branchAndBound(initPath, ub, min);
+
+	std::cout << "Minimal cycle with b&b method: ";
+	for (int element : min)
 	{
-		//if it 
-		int distance = 0;
-		for (int i = 0; i < cycle.size() - 1; i++)
-		{
-			distance += tab[cycle[i]][cycle[i + 1]];
-		}
-		distance += tab[cycle[cycle.size() - 1]][cycle[0]];
-
-		if (distance < minDist)
-		{
-			minDist = distance;
-			minCycle = cycle;
-			return cycle;
-		}
-		else
-		{
-			return minCycle;
-		}
+		std::cout << element << " <-> ";
 	}
+	std::cout << min[0] << std::endl;
+	std::cout << "Minimal distance: " << distance(min) << std::endl;
 
-	bool used = false;
-	//choose next vertex to add
-	for (int i = 0; i < vertices; i++)
-	{
-		used = false;
-
-		//check if vertex is not used
-		for (int j : cycle)
-		{
-			if (i == j)
-			{
-				used = true;
-				break;
-			}
-		}
-		if (!used || cycle.empty())
-		{
-			cycle.push_back(i);
-			minCycle = hamiltionianCycleBruteForce(cycle, minDist, minCycle);
-			cycle.pop_back();
-		}
-	}
-	return minCycle;
+	return min;
 }
-
-
-
 
 matrix& matrix::operator=(const matrix& m)
 {

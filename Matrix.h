@@ -1,6 +1,5 @@
 #pragma once
 #include "Libs.h"
-#include "Tree.h"
 class matrix
 {
 private:
@@ -9,8 +8,10 @@ private:
 	int vertices;
 
 	int lowerBound(std::vector<int> path);
-	std::vector<int> hamiltionianCycleBruteForce(std::vector<int> cycle, int& minDist, std::vector<int> minCycle);
-
+	int upperBound();
+	void branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle);
+	std::vector<int> bruteForce(std::vector<int> cycle, int& minDist, std::vector<int> minCycle);
+	
 public:
 	matrix();
 	matrix(int vertices, int** tab);
@@ -32,12 +33,12 @@ public:
 	void removeVertex(int n);
 	void fillVertexConnections(int vertex);
 	void fillVertexConnectionsRandom(int vertex, int rangeDown, int rangeUp);
+	int distance(std::vector<int> vector);
 
 	void show();
 
-	std::vector<int> hamiltionianCycleBruteForceInit();
-	std::vector<int> branchAndBound(std::vector<int> cycle, int& minDist, std::vector<int> minCycle);
-
+	std::vector<int> bruteForceInit();
+	std::vector<int> branchAndBoundInit();
 
 	matrix& operator= (const matrix& m);
 };
