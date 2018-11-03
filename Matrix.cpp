@@ -698,6 +698,30 @@ std::vector<int> matrix::branchAndBoundInit()
 	return min;
 }
 
+std::vector<int> matrix::bruteForceInit(TimeCounter& counter)
+{
+	std::vector<int> min;
+	if (vertices <= 0) return min;
+	
+	counter.start();
+	min = bruteForceInit();
+	counter.stop();
+
+	return  min;
+}
+
+std::vector<int> matrix::branchAndBoundInit(TimeCounter& counter)
+{
+	std::vector<int> min;
+	if (vertices <= 0) return min;
+
+	counter.start();
+	min = branchAndBoundInit();
+	counter.stop();
+
+	return  min;
+}
+
 matrix& matrix::operator=(const matrix& m)
 {
 	if (this == &m)

@@ -142,11 +142,13 @@
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="TimeCounter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libs.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="TimeCounter.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data.txt" />

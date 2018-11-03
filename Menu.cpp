@@ -85,6 +85,7 @@ void menu::mainMenu()
 void menu::graphMenu()
 {
 	int choice1 = 0;
+	TimeCounter counter;
 	std::vector<int> cycle;
 	do
 	{
@@ -108,35 +109,47 @@ void menu::graphMenu()
 		case 1:
 			graph.addVertex();
 			break;
+
 		case 2:
 			graph.removeVertex();
 			break;
+
 		case 3:
 			graph.show();
 			break;
+
 		case 4:
 			if (graph.getVertices() > 9) std::cout << "This method might take long time for given size of matrix. " << std::endl;
 			std::cout << "Computing . . . " << std::endl;
-			cycle = graph.bruteForceInit();
+
+			cycle = graph.bruteForceInit(counter);
+
 			std::cout << "=== Minimal Hamiltonian cycle for brute force method ===" << std::endl;
 			for (int element : cycle)
 			{
 				std::cout << element << " <-> ";
 			}
 			std::cout << cycle[0] << std::endl;
+
 			std::cout << "Weight of cycle: " << graph.distance(cycle) << std::endl;
+			std::cout << "Time of calculating: " << counter.getTime() << " ms. " << std::endl;
 			break;
+
 		case 5:
 			if (graph.getVertices() > 9) std::cout << "This method might take long time for given size of matrix. " << std::endl;
 			std::cout << "Computing . . . " << std::endl;
-			cycle = graph.branchAndBoundInit();
+
+			cycle = graph.branchAndBoundInit(counter);
+
 			std::cout << "=== Minimal Hamiltonian cycle for Branch and Bound method ===" << std::endl;
 			for (int element : cycle)
 			{
 				std::cout << element << " <-> ";
 			}
 			std::cout << cycle[0] << std::endl;
+
 			std::cout << "Weight of cycle: " << graph.distance(cycle) << std::endl;
+			std::cout << "Time of calculating: " << counter.getTime() << " ms. " << std::endl;
 			break;
 
 		default:

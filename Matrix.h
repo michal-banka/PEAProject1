@@ -1,5 +1,7 @@
 #pragma once
 #include "Libs.h"
+#include "TimeCounter.h"
+
 class matrix
 {
 private:
@@ -39,6 +41,7 @@ public:
 
 	std::vector<int> bruteForceInit();
 	std::vector<int> branchAndBoundInit();
-
+	std::vector<int> bruteForceInit(TimeCounter& counter);
+	std::vector<int> branchAndBoundInit(TimeCounter& counter);
 	matrix& operator= (const matrix& m);
 };
