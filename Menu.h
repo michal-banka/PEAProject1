@@ -8,5 +8,8 @@ private:
 public:
 	menu();
 	~menu();
+
+	void mainMenu();
+	void graphMenu();
 };
 
