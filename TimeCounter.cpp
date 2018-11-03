@@ -13,6 +13,11 @@ TimeCounter::~TimeCounter()
 {
 }
 
+double TimeCounter::getTime()
+{
+	return this->time;
+}
+
 void TimeCounter::start()
 {
 	LARGE_INTEGER largeInt;
@@ -33,6 +38,7 @@ double TimeCounter::stop()
 	LARGE_INTEGER largeInt;
 	QueryPerformanceCounter(&largeInt);
 
+	time = double(largeInt.QuadPart - counterStart) / pcFrequency;
 	return double(largeInt.QuadPart - counterStart) / pcFrequency;
 }
 
