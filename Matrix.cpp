@@ -20,6 +20,10 @@ matrix::matrix(int vertices)
 	for (int i = 0 ; i < vertices; i++)
 	{
 		this->tab[i] = new int[vertices];
+		for(int j = 0 ; j < vertices; j++)
+		{
+			tab[i][j] = 0;
+		}
 	}
 }
 
@@ -112,7 +116,6 @@ matrix::~matrix()
 		delete[] tab[i];
 	}
 	delete[] tab;
-
 }
 
 int matrix::lowerBound(std::vector<int> path)
@@ -148,7 +151,7 @@ int matrix::lowerBound(std::vector<int> path)
 					//1. not connected to itself
 					//2. the smallest
 					//3. not part of existing path
-					if (tab[i][j] != 0 && tab[i][j] < minimum && std::none_of(path.begin(), path.end(), [j](int element) {return element == j; }))
+					if (i != j && tab[i][j] < minimum && std::none_of(path.begin(), path.end(), [j](int element) {return element == j; }))
 					{
 						minimum = tab[i][j];
 					}
@@ -162,9 +165,9 @@ int matrix::lowerBound(std::vector<int> path)
 		{
 			for (int j = 0; j < vertices; j++)
 			{
-				if (tab[i][j] != 0 && tab[i][j] < minimum &&
+				if (i != j && tab[i][j] < minimum &&
 					//is this needed?
-					(std::none_of(path.begin(), path.end(), [j](int element) {return element == j; }) || j == path[/*path.size() - 1*/ 0])
+					(std::none_of(path.begin(), path.end(), [j](int element) {return element == j; }) || j == path[0])
 				   )
 				{
 					minimum = tab[i][j];
@@ -196,7 +199,7 @@ int matrix::upperBound()
 void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle)
 {
 	//checks if cycle has vertices-1 of vertices (last one is also known then)
-	if (cycle.size() == vertices - 1)
+	if (cycle.size() == (vertices - 1))
 	{
 		//add last vertex and caluclate distance which is the same as lowerBound of cycle
 		for (int i = 0; i < vertices; i++)
@@ -342,6 +345,26 @@ bool matrix::isSymetric()
 		}
 	}
 	return true;
+}
+
+void matrix::changeSizeAndClear(int size)
+{
+	for (int i = 0; i < vertices; i++)
+	{
+		delete[] tab[i];
+	}
+	delete[] tab;
+
+	this->vertices = size;
+	tab = new int*[vertices];
+	for(int i = 0; i < vertices; i++)
+	{
+		tab[i] = new int[vertices];
+		for (int j = 0; j < vertices; ++j)
+		{
+			tab[i][j] = 0;
+		}
+	}
 }
 
 void matrix::addNVertex(int n)
@@ -506,7 +529,7 @@ void matrix::fillVertexConnections(int vertex)
 		{
 			do
 			{
-				std::cout << "Podaj wage krawedzi " << i << " <-> " << vertex << ": ";
+				std::cout << "Insert edge of vertex for: " << i << " <-> " << vertex << ": ";
 				std::cin >> wage;
 			} while (wage <= 0);
 
@@ -579,6 +602,68 @@ void matrix::show()
 	std::cout << std::endl;
 }
 
+void matrix::fillFromFile(std::string filename)
+{
+	this->vertices = 0;
+	this->tab = nullptr;
+	int i = 0, j = 0;
+	int value = 0;
+	int size = 0;
+	std::ifstream read;
+	read.open(filename);
+	if (read.is_open())
+	{
+		read >> size;
+
+		if (!read.fail())
+		{
+			this->vertices = size;
+
+			//init tab with 0
+			tab = new int*[vertices];
+			for (int i = 0; i < vertices; i++)
+			{
+				tab[i] = new int[vertices];
+				for (int j = 0; j < vertices; j++)
+				{
+					tab[i][j] = 0;
+				}
+			}
+
+			//get values from file
+			for (int k = 0; k < vertices * vertices; k++)
+			{
+				read >> value;
+				if (!read.fail())
+				{
+					this->tab[i][j] = value;
+					if (++j > vertices - 1)
+					{
+						j = 0;
+						if (++i > vertices - 1)
+						{
+							break;
+						}
+					}
+				}
+				else
+				{
+					std::cout << "Read VALUE from file error." << std::endl;
+					break;
+				}
+			}
+		}
+		else
+		{
+			std::cout << "Read SIZE from file error." << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "File has NOT been opened correctly." << std::endl;
+	}
+}
+
 std::vector<int> matrix::bruteForceInit()
 {
 	std::vector<int> min;
@@ -592,14 +677,6 @@ std::vector<int> matrix::bruteForceInit()
 
 	int minDist = INT_MAX;
 	min = bruteForce(initPath, minDist,min);
-
-	std::cout << "Minimal cycle with brute force method: ";
-	for (int element : min)
-	{
-		std::cout << element << " <-> ";
-	}
-	std::cout << min[0] << std::endl;
-	std::cout << "Minimal distance: " << minDist << std::endl;
 
 	return min;
 }
@@ -617,14 +694,6 @@ std::vector<int> matrix::branchAndBoundInit()
 
 	int ub = upperBound();
 	branchAndBound(initPath, ub, min);
-
-	std::cout << "Minimal cycle with b&b method: ";
-	for (int element : min)
-	{
-		std::cout << element << " <-> ";
-	}
-	std::cout << min[0] << std::endl;
-	std::cout << "Minimal distance: " << distance(min) << std::endl;
 
 	return min;
 }

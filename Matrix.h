@@ -23,9 +23,8 @@ public:
 	int getVertices();
 	int** getTab();
 	int getElement(int x, int y);
-	//void setTab(int** tab);
-	//void setVertices(int vertices);
 	bool isSymetric();
+	void changeSizeAndClear(int size);
 
 	void addNVertex(int n);
 	void addVertex();
@@ -36,6 +35,7 @@ public:
 	int distance(std::vector<int> vector);
 
 	void show();
+	void fillFromFile(std::string filename);
 
 	std::vector<int> bruteForceInit();
 	std::vector<int> branchAndBoundInit();
