@@ -12,7 +12,7 @@ private:
 	int lowerBound(std::vector<int> path);
 	int upperBound();
 	void branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle);
-	std::vector<int> bruteForce(std::vector<int> cycle, int& minDist, std::vector<int> minCycle);
+	void bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& minCycle);
 	
 public:
 	matrix();

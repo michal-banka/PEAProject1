@@ -166,7 +166,6 @@ int matrix::lowerBound(std::vector<int> path)
 			for (int j = 0; j < vertices; j++)
 			{
 				if (i != j && tab[i][j] < minimum &&
-					//is this needed?
 					(std::none_of(path.begin(), path.end(), [j](int element) {return element == j; }) || j == path[0])
 				   )
 				{
@@ -228,8 +227,10 @@ void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector
 
 	//choose next vertex to add
 	//this will represent children: last vertex (new) and lowerbound for each of them
-	std::vector<std::pair<int, int>> possible;
-	
+	//use this constructor to prevent realocating memory in for
+	std::vector<std::pair<int, int>> possible(vertices-cycle.size(),{0,0});
+	int k = 0;
+
 	for (int i = 0; i < vertices; i++)
 	{
 		//alghoritm library and lambda expression
@@ -238,12 +239,13 @@ void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector
 		{
 			//if it isn't then push it to possible vertices and compute lowerBound
 			cycle.push_back(i);
-			possible.push_back(std::make_pair(i, lowerBound(cycle)));
+			possible[k++] = std::make_pair(i, lowerBound(cycle));
 			cycle.pop_back();
 		}
 	}
 	//now when we have all possible vertices,
 	//sort them by lowerBound value which is second element in pair
+	//nlog(n) complexity
 	std::sort(possible.begin(), possible.end(), [](std::pair<int, int> x, std::pair<int, int> y) {return x.second < y.second; });
 
 	//now when sorted start going deeper into tree
@@ -263,27 +265,18 @@ void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector
 }
 
 
-std::vector<int> matrix::bruteForce(std::vector<int> cycle, int& minDist, std::vector<int> minCycle)
+void matrix::bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& minCycle)
 {
 	//check if it's full cycle
 	if (cycle.size() == vertices)
 	{
-		int distance = 0;
-		for (int i = 0; i < cycle.size() - 1; i++)
-		{
-			distance += tab[cycle[i]][cycle[i + 1]];
-		}
-		distance += tab[cycle[cycle.size() - 1]][cycle[0]];
+		int dist = distance(cycle);
 
-		if (distance < minDist)
+		if (dist < minDist)
 		{
-			minDist = distance;
+			minDist = dist;
 			minCycle = cycle;
-			return cycle;
-		}
-		else
-		{
-			return minCycle;
+			return;
 		}
 	}
 
@@ -305,11 +298,10 @@ std::vector<int> matrix::bruteForce(std::vector<int> cycle, int& minDist, std::v
 		if (!used || cycle.empty())
 		{
 			cycle.push_back(i);
-			minCycle = bruteForce(cycle, minDist, minCycle);
+			bruteForce(cycle, minDist, minCycle);
 			cycle.pop_back();
 		}
 	}
-	return minCycle;
 }
 
 int matrix::getVertices()
@@ -667,7 +659,11 @@ void matrix::fillFromFile(std::string filename)
 std::vector<int> matrix::bruteForceInit()
 {
 	std::vector<int> min;
-	if (vertices <= 0) return min;
+	if (vertices <= 0) 
+	{
+		std::cout << "Graph is empty!" << std::endl;
+		return min;
+	}
 
 	//init path is just a first vertex of cycle pushed into vector
 	//there is no sense of checking every cycle with different first vertex
@@ -676,7 +672,7 @@ std::vector<int> matrix::bruteForceInit()
 	initPath.push_back(0);
 
 	int minDist = INT_MAX;
-	min = bruteForce(initPath, minDist,min);
+	bruteForce(initPath, minDist,min);
 
 	return min;
 }
@@ -684,8 +680,11 @@ std::vector<int> matrix::bruteForceInit()
 std::vector<int> matrix::branchAndBoundInit()
 {
 	std::vector<int> min;
-	if (vertices <= 0) return min;
-
+	if (vertices <= 0)
+	{
+		std::cout << "Graph is empty!" << std::endl;
+		return min;
+	}
 	//init path is just a first vertex of cycle pushed into vector
 	//there is no sense of checking every cycle with different first vertex
 	//becouse it's cycle 
@@ -700,11 +699,8 @@ std::vector<int> matrix::branchAndBoundInit()
 
 std::vector<int> matrix::bruteForceInit(TimeCounter& counter)
 {
-	std::vector<int> min;
-	if (vertices <= 0) return min;
-	
 	counter.start();
-	min = bruteForceInit();
+	std::vector<int> min = bruteForceInit();
 	counter.stop();
 
 	return  min;
@@ -712,11 +708,8 @@ std::vector<int> matrix::bruteForceInit(TimeCounter& counter)
 
 std::vector<int> matrix::branchAndBoundInit(TimeCounter& counter)
 {
-	std::vector<int> min;
-	if (vertices <= 0) return min;
-
 	counter.start();
-	min = branchAndBoundInit();
+	std::vector<int> min = branchAndBoundInit();
 	counter.stop();
 
 	return  min;
