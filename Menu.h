@@ -11,5 +11,6 @@ public:
 
 	void mainMenu();
 	void graphMenu();
+	void tests();
 };
 

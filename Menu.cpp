@@ -75,7 +75,8 @@ void menu::mainMenu()
 			graphMenu();
 			break;
 		case 4:
-			//todo
+			tests();
+			break;
 		default:
 			break;
 		}
@@ -156,4 +157,56 @@ void menu::graphMenu()
 			break;
 		}
 	} while (choice1 != 6);
+}
+
+void menu::tests()
+{
+	std::vector<int> sizes = { 8,9,10,11 };
+	std::vector<double> timesBruteForce(sizes.size(),0.0);
+	std::vector<double> timesBB(sizes.size(), 0.0);
+	TimeCounter counter;
+
+	std::ofstream write;
+	write.open("results.txt");
+	if(write.is_open())
+	{
+		write << "size\tB&B\tBruteforce\n";
+		for (int i = 0; i < sizes.size(); i++)
+		{
+			for (int j = 0; j < 100; ++j)
+			{
+				std::cout << "Graph size: " << sizes[i] << ", iteration: " << j << "/100" << std::endl;
+				std::cout << "Graph generating... ";
+				graph.changeSizeAndClear(sizes[i]);
+				for (int k = 0; k < sizes[i]; k++)
+				{
+					graph.fillVertexConnectionsRandom(k, 1, 50);
+				}
+				std::cout << "DONE" << std::endl;
+
+				std::cout << "B&B calculating... ";
+				graph.branchAndBoundInit(counter);
+				timesBB[i] += counter.getTime();
+				std::cout << "DONE " << std::endl;
+				std::cout << "Brute force calculating... ";
+				graph.bruteForceInit(counter);
+				timesBruteForce[i] += counter.getTime();
+				std::cout << "DONE " << std::endl;
+			}
+			std::cout << std::endl;
+			write << sizes[i] << "\t" << timesBB[i] << "\t" << timesBruteForce[i] << "\n";
+		}
+
+		std::cout << "== RESULTS (medium time, in ms.) ==" << std::endl;
+		std::cout << "size\tB&B\tBruteforce\n";
+		for(int i = 0 ; i < sizes.size(); i++)
+		{
+			std::cout << sizes[i] << "\t" << timesBB[i]/1000 << "\t" << timesBruteForce[i]/100 << "\n";
+		}
+	}
+	else
+	{
+		std::cout << "File has been not opened." << std::endl;
+	}
+	write.close();
 }
