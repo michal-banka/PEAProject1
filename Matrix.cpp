@@ -197,6 +197,23 @@ int matrix::upperBound()
 
 void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle)
 {
+	
+	if (cycle.size() == vertices - 1)
+	{
+		std::cout << "up:" << upperBound << ", lb: " << lowerBound(cycle) << std::endl;
+		std::cout << (cycle.size() == vertices - 1 ? "-> " : "");
+		std::cout << "Cycle: ";
+		for (int element : cycle)
+		{
+			std::cout << element << " ";
+		}
+		std::cout << std::endl;
+	}
+	if (cycle.size() < 4)
+	{
+		std::cout << "works" << std::endl;
+	}
+
 	//checks if cycle has vertices-1 of vertices (last one is also known then)
 	if (cycle.size() == (vertices - 1))
 	{
@@ -231,6 +248,7 @@ void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector
 	std::vector<std::pair<int, int>> possible(vertices-cycle.size(),{0,0});
 	int k = 0;
 
+	cycle.resize(cycle.size() + 1);
 	for (int i = 0; i < vertices; i++)
 	{
 		//alghoritm library and lambda expression
@@ -238,11 +256,11 @@ void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector
 		if (std::none_of(cycle.begin(), cycle.end(), [i](int vertex) {return i == vertex; }))
 		{
 			//if it isn't then push it to possible vertices and compute lowerBound
-			cycle.push_back(i);
+			cycle[cycle.size() - 1] = i;
 			possible[k++] = std::make_pair(i, lowerBound(cycle));
-			cycle.pop_back();
 		}
 	}
+	cycle.resize(cycle.size() - 1);
 	//now when we have all possible vertices,
 	//sort them by lowerBound value which is second element in pair
 	//nlog(n) complexity
@@ -433,19 +451,19 @@ void matrix::addVertex()
 		{
 			temp[i][j] = tab[i][j];
 		}
-		//and add empty vertice
+		//and add empty vertex
 		temp[i][vertices] = 0;
 	}
 
-	this->vertices++;
+	
 
 
 	for (int i = 0; i < vertices; i++)
 	{
-		delete[] tab[i];
+		delete[] this->tab[i];
 	}
-	delete[] tab;
-
+	delete[] this->tab;
+	this->vertices++;
 	tab = temp;
 }
 

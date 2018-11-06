@@ -109,6 +109,7 @@ void menu::graphMenu()
 		{
 		case 1:
 			graph.addVertex();
+			graph.fillVertexConnections(graph.getVertices() - 1);
 			break;
 
 		case 2:
@@ -120,7 +121,7 @@ void menu::graphMenu()
 			break;
 
 		case 4:
-			if (graph.getVertices() > 9) std::cout << "This method might take long time for given size of matrix. " << std::endl;
+			if (graph.getVertices() > 10) std::cout << "This method might take long time for given size of matrix. " << std::endl;
 			std::cout << "Computing . . . " << std::endl;
 
 			cycle = graph.bruteForceInit(counter);
@@ -137,7 +138,7 @@ void menu::graphMenu()
 			break;
 
 		case 5:
-			if (graph.getVertices() > 9) std::cout << "This method might take long time for given size of matrix. " << std::endl;
+			if (graph.getVertices() > 10) std::cout << "This method might take long time for given size of matrix. " << std::endl;
 			std::cout << "Computing . . . " << std::endl;
 
 			cycle = graph.branchAndBoundInit(counter);
@@ -161,7 +162,7 @@ void menu::graphMenu()
 
 void menu::tests()
 {
-	std::vector<int> sizes = { 8,9,10,11 };
+	std::vector<int> sizes = {8,9,10,11,12};
 	std::vector<double> timesBruteForce(sizes.size(),0.0);
 	std::vector<double> timesBB(sizes.size(), 0.0);
 	TimeCounter counter;
