@@ -197,23 +197,6 @@ int matrix::upperBound()
 
 void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle)
 {
-	
-	if (cycle.size() == vertices - 1)
-	{
-		std::cout << "up:" << upperBound << ", lb: " << lowerBound(cycle) << std::endl;
-		std::cout << (cycle.size() == vertices - 1 ? "-> " : "");
-		std::cout << "Cycle: ";
-		for (int element : cycle)
-		{
-			std::cout << element << " ";
-		}
-		std::cout << std::endl;
-	}
-	if (cycle.size() < 4)
-	{
-		std::cout << "works" << std::endl;
-	}
-
 	//checks if cycle has vertices-1 of vertices (last one is also known then)
 	if (cycle.size() == (vertices - 1))
 	{
