@@ -202,7 +202,7 @@ void menu::tests()
 		std::cout << "size\tB&B\tBruteforce\n";
 		for(int i = 0 ; i < sizes.size(); i++)
 		{
-			std::cout << sizes[i] << "\t" << timesBB[i]/1000 << "\t" << timesBruteForce[i]/100 << "\n";
+			std::cout << sizes[i] << "\t" << timesBB[i]/100.0 << "\t" << timesBruteForce[i]/100.0 << "\n";
 		}
 	}
 	else
