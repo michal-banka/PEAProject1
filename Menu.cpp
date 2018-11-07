@@ -22,7 +22,8 @@ void menu::mainMenu()
 		std::cout << "3. Create graph - given size, random values (unsymmetrical) ..." << std::endl;
 		std::cout << "4. Create graph - given size, given values ..." << std::endl;
 		std::cout << "5. Automatic time measurment - for documentation" << std::endl;
-		std::cout << "6. Quit." << std::endl;
+		std::cout << "6. Automatic time measurment - for documentation (only b&b)" << std::endl;
+		std::cout << "7. Quit." << std::endl;
 
 		do
 		{
@@ -30,7 +31,7 @@ void menu::mainMenu()
 			std::cin >> choice1;
 			std::cin.get();
 			std::cout << std::endl;
-		} while (choice1 <= 0 || choice1 > 6);
+		} while (choice1 <= 0 || choice1 > 7);
 
 		switch (choice1)
 		{
@@ -93,10 +94,13 @@ void menu::mainMenu()
 		case 5:
 			tests();
 			break;
+		case 6:
+			tests2();
+			break;
 		default:
 			break;
 		}
-	} while (choice1 != 6);
+	} while (choice1 != 7);
 }
 
 void menu::graphMenu()
@@ -219,6 +223,53 @@ void menu::tests()
 		for(int i = 0 ; i < sizes.size(); i++)
 		{
 			std::cout << sizes[i] << "\t" << timesBB[i]/100.0 << "\t" << timesBruteForce[i]/100.0 << "\n";
+		}
+	}
+	else
+	{
+		std::cout << "File has been not opened." << std::endl;
+	}
+	write.close();
+}
+
+void menu::tests2()
+{
+	std::vector<int> sizes = { 10,11,12,13,14,15,16,17,18,19,20 };
+	std::vector<double> timesBB(sizes.size(), 0.0);
+	TimeCounter counter;
+
+	std::ofstream write;
+	write.open("results2.txt");
+	if (write.is_open())
+	{
+		write << "size\tB&B\n";
+		for (int i = 0; i < sizes.size(); i++)
+		{
+			for (int j = 0; j < 100; ++j)
+			{
+				std::cout << "Graph size: " << sizes[i] << ", iteration: " << j << "/100" << std::endl;
+				std::cout << "Graph generating... ";
+				graph.changeSizeAndClear(sizes[i]);
+				for (int k = 0; k < sizes[i]; k++)
+				{
+					graph.fillVertexConnectionsRandom(k, 1, 100);
+				}
+				std::cout << "DONE" << std::endl;
+
+				std::cout << "B&B calculating... ";
+				graph.branchAndBoundInit(counter);
+				timesBB[i] += counter.getTime();
+				std::cout << "DONE " << std::endl;
+			}
+			std::cout << std::endl;
+			write << sizes[i] << "\t" << timesBB[i] / 100.0 << "\n";
+		}
+
+		std::cout << "== RESULTS (medium time, in ms.) ==" << std::endl;
+		std::cout << "size\tB&B\n";
+		for (int i = 0; i < sizes.size(); i++)
+		{
+			std::cout << sizes[i] << "\t" << timesBB[i] / 100.0  << "\n";
 		}
 	}
 	else
