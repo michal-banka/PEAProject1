@@ -1,9 +1,0 @@
-﻿  Matrix.cpp
-d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(375): warning C4309: 'static_cast': truncation of constant value
-d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(378): warning C4309: 'static_cast': truncation of constant value
-d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(382): warning C4309: 'static_cast': truncation of constant value
-d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(427): warning C4018: '<': signed/unsigned mismatch
-d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(451): warning C4018: '<': signed/unsigned mismatch
-d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(453): warning C4018: '<': signed/unsigned mismatch
-d:\informatyka korepetycje\studia\pea_18-19\projectpea1\projectpea1\matrix.cpp(491): warning C4717: 'matrix::hamiltionianCycleBruteForce': recursive on all control paths, function will cause runtime stack overflow
-  ProjectPEA1.vcxproj -> D:\Informatyka korepetycje\Studia\PEA_18-19\ProjectPEA1\Debug\ProjectPEA1.exe
