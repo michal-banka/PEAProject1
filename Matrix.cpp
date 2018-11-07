@@ -125,6 +125,7 @@ int matrix::lowerBound(std::vector<int> path)
 
 	int lb = 0;
 	int minimum = INT_MAX;
+	int minimum2 = INT_MAX;
 	//add lengths of existing paths
 	for (int i = 0 ; i < path.size() - 1; i++)
 	{
@@ -155,8 +156,12 @@ int matrix::lowerBound(std::vector<int> path)
 					{
 						minimum = tab[i][j];
 					}
+					if (i != j && tab[j][i] < minimum2 && std::none_of(path.begin(), path.end(), [j](int element) {return element == j; }))
+					{
+						minimum2 = tab[j][i];
+					}
 				}
-				lb += minimum;
+				lb += (minimum + minimum2)/2;
 			}
 		}
 		//if it's not found in path
@@ -171,8 +176,15 @@ int matrix::lowerBound(std::vector<int> path)
 				{
 					minimum = tab[i][j];
 				}
+
+				if (i != j && tab[j][i] < minimum2 &&
+					(std::none_of(path.begin(), path.end(), [j](int element) {return element == j; }) || j == path[0])
+					)
+				{
+					minimum2 = tab[j][i];
+				}
 			}
-			lb += minimum;
+			lb += (minimum + minimum2) / 2;
 		}
 	}
 
@@ -541,6 +553,20 @@ void matrix::fillVertexConnectionsRandom(int vertex, int rangeDown, int rangeUp)
 		{
 			int num = rangeDown + rand() % (rangeUp + 1 - rangeDown);
 			tab[i][vertex] = num;
+			tab[vertex][i] = num;
+		}
+	}
+}
+
+void matrix::fillVertexConnectionsRandomUnsymmetrical(int vertex, int rangeDown, int rangeUp)
+{
+	for (int i = 0; i < vertices; i++)
+	{
+		if (i != vertex)
+		{
+			int num = rangeDown + rand() % (rangeUp + 1 - rangeDown);
+			tab[i][vertex] = num;
+			num = rangeDown + rand() % (rangeUp + 1 - rangeDown);
 			tab[vertex][i] = num;
 		}
 	}

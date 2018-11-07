@@ -34,6 +34,7 @@ public:
 	void removeVertex(int n);
 	void fillVertexConnections(int vertex);
 	void fillVertexConnectionsRandom(int vertex, int rangeDown, int rangeUp);
+	void fillVertexConnectionsRandomUnsymmetrical(int vertex, int rangeDown, int rangeUp);
 	int distance(std::vector<int> vector);
 
 	void show();
