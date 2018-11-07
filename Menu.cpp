@@ -18,10 +18,11 @@ void menu::mainMenu()
 	{
 		std::cout << std::endl << "==== MAIN MENU ====" << std::endl;
 		std::cout << "1. Create graph - from file ..." << std::endl;
-		std::cout << "2. Create graph - given size, random values ..." << std::endl;
-		std::cout << "3. Create graph - given size, given values ..." << std::endl;
-		std::cout << "4. Automatic time measurment - for documentation" << std::endl;
-		std::cout << "5. Quit." << std::endl;
+		std::cout << "2. Create graph - given size, random values (symmetrical) ..." << std::endl;
+		std::cout << "3. Create graph - given size, random values (unsymmetrical) ..." << std::endl;
+		std::cout << "4. Create graph - given size, given values ..." << std::endl;
+		std::cout << "5. Automatic time measurment - for documentation" << std::endl;
+		std::cout << "6. Quit." << std::endl;
 
 		do
 		{
@@ -29,7 +30,7 @@ void menu::mainMenu()
 			std::cin >> choice1;
 			std::cin.get();
 			std::cout << std::endl;
-		} while (choice1 <= 0 || choice1 > 5);
+		} while (choice1 <= 0 || choice1 > 6);
 
 		switch (choice1)
 		{
@@ -70,17 +71,32 @@ void menu::mainMenu()
 			graph.changeSizeAndClear(size);
 			for (int i = 0; i < size; i++)
 			{
-				graph.fillVertexConnections(i);
+				graph.fillVertexConnectionsRandomUnsymmetrical(i, 1, 25);
 			}
 			graphMenu();
 			break;
 		case 4:
+			do
+			{
+				std::cout << "Insert number of vertices: ";
+				std::cin >> size;
+				std::cin.get();
+			} while (size <= 0 || size >= INT_MAX);
+
+			graph.changeSizeAndClear(size);
+			for (int i = 0; i < size; i++)
+			{
+				graph.fillVertexConnections(i);
+			}
+			graphMenu();
+			break;
+		case 5:
 			tests();
 			break;
 		default:
 			break;
 		}
-	} while (choice1 != 5);
+	} while (choice1 != 6);
 }
 
 void menu::graphMenu()
@@ -181,7 +197,7 @@ void menu::tests()
 				graph.changeSizeAndClear(sizes[i]);
 				for (int k = 0; k < sizes[i]; k++)
 				{
-					graph.fillVertexConnectionsRandom(k, 1, 50);
+					graph.fillVertexConnectionsRandom(k, 1, 100);
 				}
 				std::cout << "DONE" << std::endl;
 
@@ -195,7 +211,7 @@ void menu::tests()
 				std::cout << "DONE " << std::endl;
 			}
 			std::cout << std::endl;
-			write << sizes[i] << "\t" << timesBB[i] << "\t" << timesBruteForce[i] << "\n";
+			write << sizes[i] << "\t" << timesBB[i]/100.0 << "\t" << timesBruteForce[i]/100.0 << "\n";
 		}
 
 		std::cout << "== RESULTS (medium time, in ms.) ==" << std::endl;

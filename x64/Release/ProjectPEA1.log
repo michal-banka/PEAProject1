@@ -1,7 +1,7 @@
 ﻿  Menu.cpp
   Generating code
-  2 of 494 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+  3 of 501 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    9 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   ProjectPEA1.vcxproj -> D:\Informatyka korepetycje\Studia\PEA_18-19\ProjectPEA1\x64\Release\ProjectPEA1.exe
