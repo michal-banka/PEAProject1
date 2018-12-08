@@ -7,25 +7,34 @@ int main()
 	srand(time(nullptr));
 
 	//menu().mainMenu();
-	matrix graph("data.txt");
-	//graph.addNVertex(10);
-	/*for (int i = 0; i < graph.getVertices(); ++i)
-	{
-		graph.fillVertexConnectionsRandom(i, 1, 60);
-	}*/
-	graph.show();
+
+	std::cout << "=============== 17 (39) ====================" << std::endl;
+	matrix graph("17.txt");
 
 	std::vector<int> minCycle = graph.simulatedAnnealingInit();
 	graph.printCycle(minCycle);
 	std::cout << graph.distance2(minCycle) << std::endl;
 
-	std::vector<int> minCycle2 = graph.bruteForceInit();
-	graph.printCycle(minCycle2);
-	std::cout << graph.distance2(minCycle2) << std::endl;
+	std::cout << "=============== 56 (1608) ====================" << std::endl;
+	graph.fillFromFile("56.txt");
 
-	std::vector<int> minCycle3 = graph.branchAndBoundInit();
-	graph.printCycle(minCycle3);
-	std::cout << graph.distance2(minCycle3) << std::endl;
+	minCycle = graph.simulatedAnnealingInit();
+	graph.printCycle(minCycle);
+	std::cout << graph.distance2(minCycle) << std::endl;
+
+	std::cout << "=============== 70 (38673) ====================" << std::endl;
+	graph.fillFromFile("70.txt");
+
+	minCycle = graph.simulatedAnnealingInit();
+	graph.printCycle(minCycle);
+	std::cout << graph.distance2(minCycle) << std::endl;
+
+	std::cout << "=============== 171 (2755) ====================" << std::endl;
+	graph.fillFromFile("171.txt");
+
+	minCycle = graph.simulatedAnnealingInit();
+	graph.printCycle(minCycle);
+	std::cout << graph.distance2(minCycle) << std::endl;
 
 	std::cin.get();
 	return 0;

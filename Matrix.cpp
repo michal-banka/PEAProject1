@@ -328,14 +328,15 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 	//iteration is number of times when temp. was decreased
 
 	cycleMin = cycle;
-	const int tempLength = cycle.size()*(cycle.size() - 1)/2 / 2;
+	const int tempLength = cycle.size()*(cycle.size() - 1)/2;
 	double temp = tempStart;
 	int lastChange = 0;
 	std::vector<int> cycleNeighbour;
 	int distanceCycleMin = distance(cycleMin);
-
-	while (lastChange < 1000 && temp > tempMin)
+	
+	while (lastChange < 500 && temp > tempMin)
 	{
+		std::cout << temp << std::endl;
 		//check neighbours for const temp 
 		//after for decrease temp
 		for (int i = 0; i < tempLength; i++)
@@ -351,12 +352,10 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 			//if neighbour is better or the same then just swap or
 			//if neighbour is worse then MAYBE swap
 			//	--why static_cast<double> generate always 0 ?
-			double p = (double)rand() / RAND_MAX;
-			
+		
 			if (distanceCycleNeighbour - distanceCycle <= 0 || 
-				distanceCycleNeighbour- distanceCycle > 0 && p < exp(-(distanceCycleNeighbour - distanceCycle) / temp))
+				distanceCycleNeighbour - distanceCycle > 0 && (double)rand() / RAND_MAX < exp(-(distanceCycleNeighbour - distanceCycle) / temp))
 			{
-				//std::cout << "Change: " << (distanceCycleNeighbour - distanceCycle <= 0 ? "znalaz lepszo" : "tak wyszlo no") << std::endl;
 				cycle = cycleNeighbour;
 				lastChange = 0;
 			}
@@ -365,7 +364,7 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 			if (distanceCycleNeighbour < distanceCycleMin)
 			{
 				cycleMin = cycle;
-				distanceCycleMin = distance(cycleMin);
+				distanceCycleMin = distanceCycleNeighbour;
 			}
 
 			lastChange++;
@@ -387,7 +386,7 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 	}
 }
 
-double matrix::getTemperatureStart(int samplesSize)
+double matrix::getTemperatureStartAverage(int samplesSize)
 {
 	//Starting temp. will be average of differences bettwen n cycles and theirs neighbours
 	double sumTemp = 0.0;
@@ -400,6 +399,22 @@ double matrix::getTemperatureStart(int samplesSize)
 
 	//caluclate average amplitude and return
 	return (sumTemp / samplesSize);
+}
+
+double matrix::getTemperatureStartMax(int samplesSize)
+{
+	double maxTemp = 0.0;
+	std::vector<int> cycleParent = randomCycle();
+	for (int i = 0; i < samplesSize; i++)
+	{
+		int delta = abs(distance(cycleParent) - distance(getRandomTransformationOfVector(cycleParent)));
+		if (delta > maxTemp)
+		{
+			maxTemp = delta;
+		}
+		cycleParent = randomCycle();
+	}
+	return maxTemp;
 }
 
 double matrix::getTemperature(int iteration, double tempStart, double coolingSpeed)
@@ -880,7 +895,7 @@ std::vector<int> matrix::branchAndBoundInit(TimeCounter& counter)
 std::vector<int> matrix::simulatedAnnealingInit()
 {
 	std::vector<int> minCycle;
-	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStart(vertices), 0.01);
+	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.01);
 	return minCycle;
 }
 

@@ -43,6 +43,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="data.txt" />
+    <Text Include="17.txt" />
+    <Text Include="56.txt" />
+    <Text Include="171.txt" />
+    <Text Include="70.txt" />
   </ItemGroup>
 </Project>
