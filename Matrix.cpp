@@ -328,46 +328,53 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 	//iteration is number of times when temp. was decreased
 
 	cycleMin = cycle;
-	const int tempLength = cycle.size()*(cycle.size() - 1) / 2 / 8;
-	int iteration = 0;
+	const int tempLength = cycle.size()*(cycle.size() - 1)/2 / 2;
 	double temp = tempStart;
-	std::vector<int> cyclePrevious;
+	int lastChange = 0;
 	std::vector<int> cycleNeighbour;
-	do
+	int distanceCycleMin = distance(cycleMin);
+
+	while (lastChange < 1000 && temp > tempMin)
 	{
-		cyclePrevious = cycle;
+		//check neighbours for const temp 
+		//after for decrease temp
 		for (int i = 0; i < tempLength; i++)
 		{
 			//choose neighbour
-			//neighbour will be random for now (greedy) - todo
+			//neighbour will be randomly chosen
 			cycleNeighbour = getRandomTransformationOfVector(cycle);
-
+			
 			//calculation done here for optimization
 			int distanceCycle = distance(cycle);
 			int distanceCycleNeighbour = distance(cycleNeighbour);
 
-			//if neighbour is better or the same then just swap
-			if (distanceCycleNeighbour - distanceCycle <= 0)
-			{
-				cycle = cycleNeighbour;
-			}
+			//if neighbour is better or the same then just swap or
 			//if neighbour is worse then MAYBE swap
-			//	--why static_cast<double> generate always 0! todo 
-			else if ((double)rand() / RAND_MAX < exp(-(distanceCycleNeighbour - distanceCycle)/temp))
+			//	--why static_cast<double> generate always 0 ?
+			double p = (double)rand() / RAND_MAX;
+			
+			if (distanceCycleNeighbour - distanceCycle <= 0 || 
+				distanceCycleNeighbour- distanceCycle > 0 && p < exp(-(distanceCycleNeighbour - distanceCycle) / temp))
 			{
+				//std::cout << "Change: " << (distanceCycleNeighbour - distanceCycle <= 0 ? "znalaz lepszo" : "tak wyszlo no") << std::endl;
 				cycle = cycleNeighbour;
-				//std::cout << "Neighbour worse but probablity fine." << std::endl;
+				lastChange = 0;
 			}
-
+			
 			//save the best found cycle
-			if (distance(cycle) < distance(cycleMin))
+			if (distanceCycleNeighbour < distanceCycleMin)
 			{
 				cycleMin = cycle;
+				distanceCycleMin = distance(cycleMin);
 			}
+
+			lastChange++;
+			if (lastChange == 1000) break;
 		}
 
-		//decrease temp
-		temp = getTemperature(++iteration, tempStart, 0.9);
+		//decrease temp and increase lastChange indicator
+		
+		temp *= 0.95;
 		/*std::cout << "======================================" << std::endl;
 		std::cout << temp << std::endl;
 		std::cout << "======================================" << std::endl;
@@ -377,7 +384,7 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 		std::cout << "======================================" << std::endl;
 		std::cin.get();*/
 		//finish when alghoritm has so low probability of moving to worse solution that it didn't happen
-	} while (cycle != cyclePrevious || temp < tempMin);
+	}
 }
 
 double matrix::getTemperatureStart(int samplesSize)
@@ -426,9 +433,13 @@ std::vector<int> matrix::randomCycle()
 std::vector<int> matrix::getRandomTransformationOfVector(std::vector<int> vector)
 {
 	//swap two elements in vector
-	//might be the same element but probability of that is 1/(vec.size()^2) 
-	//so it's very unlikely and even if happens, it has very low impact on further calculation
-	std::swap(vector[rand() % vector.size()], vector[rand() % vector.size()]);
+	int idx1 = rand() % vector.size(), idx2 = 0;
+	do
+	{
+		idx2 = rand() % vector.size();
+	} while (idx1 == idx2);
+
+	std::swap(vector[idx1], vector[idx2]);
 	return vector;
 }
 
@@ -688,7 +699,7 @@ int matrix::distance(std::vector<int> vector)
 	{
 		distance += tab[vector[i]][vector[i + 1]];
 	}
-	distance += tab[vector[vector.size() - 1]][0];
+	distance += tab[vector[vector.size() - 1]][vector[0]];
 
 	return distance;
 }
@@ -703,8 +714,8 @@ int matrix::distance2(std::vector<int> vector)
 		std::cout << vector[i] << " to " << vector[i + 1] << " = " << tab[vector[i]][vector[i + 1]] << std::endl;
 		distance += tab[vector[i]][vector[i + 1]];
 	}
-	std::cout << vector[vector.size() - 1] << " to " << vector[0] << " = " << tab[vector[vector.size() - 1]][0] << std::endl;
-	distance += tab[vector[vector.size() - 1]][0];
+	std::cout << vector[vector.size() - 1] << " to " << vector[0] << " = " << tab[vector[vector.size() - 1]][vector[0]] << std::endl;
+	distance += tab[vector[vector.size() - 1]][vector[0]];
 
 	return distance;
 }
