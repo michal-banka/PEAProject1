@@ -315,7 +315,7 @@ void matrix::bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& 
 	}
 }
 
-void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart)
+void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin)
 {
 	//Neighbourhood - every cycle that can be created by transformation of parent cycle
 	//Transformation - trans. type is /swap/
@@ -328,36 +328,32 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 	//iteration is number of times when temp. was decreased
 
 	cycleMin = cycle;
-	const int tempLength = cycle.size()*(cycle.size() - 1) / 2 / 2;
+	const int tempLength = cycle.size()*(cycle.size() - 1) / 2 / 8;
 	int iteration = 0;
 	double temp = tempStart;
 	std::vector<int> cyclePrevious;
-//	std::cout << "temp length: " << tempLength << std::endl;
+	std::vector<int> cycleNeighbour;
 	do
 	{
-		//std::cout << "temp: " << temp << std::endl;
 		cyclePrevious = cycle;
 		for (int i = 0; i < tempLength; i++)
 		{
 			//choose neighbour
 			//neighbour will be random for now (greedy) - todo
-			std::vector<int> cycleNeighbour = getRandomTransformationOfVector(cycle);
+			cycleNeighbour = getRandomTransformationOfVector(cycle);
 
 			//calculation done here for optimization
 			int distanceCycle = distance(cycle);
 			int distanceCycleNeighbour = distance(cycleNeighbour);
 
 			//if neighbour is better or the same then just swap
-			//	--why static_cast<double> generate always 0! todo 
-			double p = (double)rand() / RAND_MAX;
-			//std::cout << "p = " << p << ", exp = " << exp(-(distanceCycleNeighbour - distanceCycle) / temp) << std::endl;
 			if (distanceCycleNeighbour - distanceCycle <= 0)
 			{
 				cycle = cycleNeighbour;
-				//std::cout << "Neighbour better." << std::endl;
 			}
 			//if neighbour is worse then MAYBE swap
-			else if ( p < exp(-(distanceCycleNeighbour - distanceCycle)/temp))
+			//	--why static_cast<double> generate always 0! todo 
+			else if ((double)rand() / RAND_MAX < exp(-(distanceCycleNeighbour - distanceCycle)/temp))
 			{
 				cycle = cycleNeighbour;
 				//std::cout << "Neighbour worse but probablity fine." << std::endl;
@@ -368,21 +364,20 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 			{
 				cycleMin = cycle;
 			}
-
-			/*printCycle(cycle);
-			std::cout << "DistCycle: " << distanceCycle << std::endl;
-			printCycle(cycleNeighbour);
-			std::cout << "DistCycleNeighb: " << distanceCycleNeighbour << std::endl <<
-				"=================================================" << std::endl;*/
-			
-			
 		}
 
 		//decrease temp
 		temp = getTemperature(++iteration, tempStart, 0.9);
-		
+		/*std::cout << "======================================" << std::endl;
+		std::cout << temp << std::endl;
+		std::cout << "======================================" << std::endl;
+		printCycle(cycle);
+		std::cout << "======================================" << std::endl;
+		printCycle(cyclePrevious);
+		std::cout << "======================================" << std::endl;
+		std::cin.get();*/
 		//finish when alghoritm has so low probability of moving to worse solution that it didn't happen
-	} while (cycle != cyclePrevious);
+	} while (cycle != cyclePrevious || temp < tempMin);
 }
 
 double matrix::getTemperatureStart(int samplesSize)
@@ -698,6 +693,22 @@ int matrix::distance(std::vector<int> vector)
 	return distance;
 }
 
+int matrix::distance2(std::vector<int> vector)
+{
+	if (vector.empty()) return -1;
+	int distance = 0;
+
+	for (int i = 0; i < vector.size() - 1; ++i)
+	{
+		std::cout << vector[i] << " to " << vector[i + 1] << " = " << tab[vector[i]][vector[i + 1]] << std::endl;
+		distance += tab[vector[i]][vector[i + 1]];
+	}
+	std::cout << vector[vector.size() - 1] << " to " << vector[0] << " = " << tab[vector[vector.size() - 1]][0] << std::endl;
+	distance += tab[vector[vector.size() - 1]][0];
+
+	return distance;
+}
+
 void matrix::show()
 {
 
@@ -824,6 +835,7 @@ std::vector<int> matrix::branchAndBoundInit()
 		std::cout << "Graph is empty!" << std::endl;
 		return min;
 	}
+	//std::cout << "WORK" << std::endl;
 	//init path is just a first vertex of cycle pushed into vector
 	//there is no sense of checking every cycle with different first vertex
 	//becouse it's cycle 
@@ -857,11 +869,9 @@ std::vector<int> matrix::branchAndBoundInit(TimeCounter& counter)
 std::vector<int> matrix::simulatedAnnealingInit()
 {
 	std::vector<int> minCycle;
-	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStart(vertices));
+	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStart(vertices), 0.01);
 	return minCycle;
-
 }
-
 
 matrix& matrix::operator=(const matrix& m)
 {

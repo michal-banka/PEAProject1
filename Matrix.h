@@ -13,7 +13,7 @@ private:
 	int upperBound();
 	void branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle);
 	void bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& minCycle);
-	void simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart);
+	void simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin);
 	double getTemperatureStart(int samplesSize);
 	double getTemperature(int iteration, double tempStart, double coolingSpeed);
 	
@@ -42,6 +42,7 @@ public:
 	void fillVertexConnectionsRandom(int vertex, int rangeDown, int rangeUp);
 	void fillVertexConnectionsRandomUnsymmetrical(int vertex, int rangeDown, int rangeUp);
 	int distance(std::vector<int> vector);
+	int distance2(std::vector<int> vector);
 
 	void show();
 	void fillFromFile(std::string filename);
