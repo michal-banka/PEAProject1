@@ -206,7 +206,6 @@ int matrix::upperBound()
 	return ub;
 }
 
-
 void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle)
 {
 	//checks if cycle has vertices-1 of vertices (last one is also known then)
@@ -277,7 +276,6 @@ void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector
 	//if every branch was checked go back higher on tree
 }
 
-
 void matrix::bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& minCycle)
 {
 	//check if it's full cycle
@@ -315,6 +313,84 @@ void matrix::bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& 
 			cycle.pop_back();
 		}
 	}
+}
+
+void matrix::simulatedAnnealing(std::vector<int> cycle)
+{
+	//Neighbourhood - every cycle that can be created by transformation of parent cycle
+	//Transformation - trans. type is /swap/
+	//Neighbourhood Size - number of possible unique transformations of parent cycle,
+	//				size for /swap/ type is n(n-1)/2
+	//Temp. Length - is value that indicates how often temperature should be decreased,
+	//				should be proportional to Neighbourhood Size ( 1:2 here - todo)
+	//Temperature - starting temp. described in next func.
+	//				lowering temp. is 0,95 * lastTemp
+	//iteration is number of times when temp. was decreased
+
+	int iteration = 0;
+	const int tempLength = cycle.size()*(cycle.size()-1)/2 / 2;
+	int temp = temperatureStart(cycle.size());
+	std::vector<int> cycleMin = cycle;
+	std::vector<int> cycleNeighbour(cycle.size(),0);
+	int distX = distance(cycle);
+	do
+	{
+		for (int i = 0; i < tempLength; i++)
+		{
+			//choose neighbour
+			//neighbour will be random for now (greedy) - todo
+			cycleNeighbour = getRandomTransformationOfVector(cycle);
+
+			if (distance(cycleNeighbour) < distance(cycle))
+			{
+				
+			}
+		}
+	} while (true);
+}
+
+
+int matrix::temperatureStart(int samplesSize)
+{
+	//Starting temp. will be average of differences bettwen n cycles and theirs neighbours
+	int sumTemp = 0;
+	std::vector<int> cycleParent = randomCycle();
+	for (int i = 0 ; i < samplesSize; i++)
+	{
+		sumTemp += abs(distance(cycleParent) - distance(getRandomTransformationOfVector(cycleParent)));
+		cycleParent = randomCycle();
+	}
+
+	//caluclate average amplitude and return
+	return (sumTemp / samplesSize);
+}
+
+std::vector<int> matrix::randomCycle()
+{
+	//to prevent from reallocating memory create vector with const size
+	std::vector<int> cycle(vertices, 0);
+
+	for (int i = 0; i < cycle.size(); i++)
+	{
+		//fill cycle with sorted values = i
+		cycle[i] = i;
+	}
+
+	for (int i = 0; i < cycle.size(); i++)
+	{
+		//shuffle values randomly 
+		std::swap(cycle[i], cycle[rand() % cycle.size()]);
+	}
+	return cycle;
+}
+
+std::vector<int> matrix::getRandomTransformationOfVector(std::vector<int> vector)
+{
+	//swap two elements in vector
+	//might be the same element but probability of that is 1/(vec.size()^2) 
+	//so it's very unlikely and even if happens, it has very low impact on further calculation
+	std::swap(vector[rand() % vector.size()], vector[rand() % vector.size()]);
+	return vector;
 }
 
 int matrix::getVertices()
@@ -411,24 +487,6 @@ void matrix::addNVertex(int n)
 	tab = temp;
 	
 }
-
-
-
-/*void Matrix::setTab(int** tab)
-{
-	this->tab = tab;
-}
-
-void Matrix::setEdges(int edges)
-{
-	this->edges = edges;
-}
-
-void Matrix::setVertices(int vertices)
-{
-	this->vertices = vertices;
-}*/
-
 
 void matrix::addVertex()
 {
@@ -741,6 +799,8 @@ std::vector<int> matrix::branchAndBoundInit(TimeCounter& counter)
 
 	return  min;
 }
+
+
 
 matrix& matrix::operator=(const matrix& m)
 {

@@ -13,7 +13,10 @@ private:
 	int upperBound();
 	void branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle);
 	void bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& minCycle);
-	
+	void simulatedAnnealing(std::vector<int> cycle);
+	int temperatureStart(int samplesSize);
+	std::vector<int> randomCycle();
+	std::vector<int> getRandomTransformationOfVector(std::vector<int> vector);
 public:
 	matrix();
 	matrix(int vertices, int** tab);
@@ -40,9 +43,14 @@ public:
 	void show();
 	void fillFromFile(std::string filename);
 
+	//Project 1
 	std::vector<int> bruteForceInit();
 	std::vector<int> branchAndBoundInit();
 	std::vector<int> bruteForceInit(TimeCounter& counter);
 	std::vector<int> branchAndBoundInit(TimeCounter& counter);
+
+	//Project 2
+	std::vector<int> tabuSearch();
+
 	matrix& operator= (const matrix& m);
 };
