@@ -13,10 +13,10 @@ private:
 	int upperBound();
 	void branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle);
 	void bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& minCycle);
-	void simulatedAnnealing(std::vector<int> cycle);
-	int temperatureStart(int samplesSize);
-	std::vector<int> randomCycle();
-	std::vector<int> getRandomTransformationOfVector(std::vector<int> vector);
+	void simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart);
+	double getTemperatureStart(int samplesSize);
+	double getTemperature(int iteration, double tempStart, double coolingSpeed);
+	
 public:
 	matrix();
 	matrix(int vertices, int** tab);
@@ -30,6 +30,9 @@ public:
 	int getElement(int x, int y);
 	bool isSymetric();
 	void changeSizeAndClear(int size);
+	std::vector<int> randomCycle();
+	std::vector<int> getRandomTransformationOfVector(std::vector<int> vector);
+	void printCycle(std::vector<int> cycle);
 
 	void addNVertex(int n);
 	void addVertex();
@@ -50,6 +53,7 @@ public:
 	std::vector<int> branchAndBoundInit(TimeCounter& counter);
 
 	//Project 2
+	std::vector<int> simulatedAnnealingInit();
 	std::vector<int> tabuSearch();
 
 	matrix& operator= (const matrix& m);
