@@ -283,15 +283,17 @@ void menu::testsSA()
 {
 	TimeCounter timeCounter;
 	std::vector<double> times(50);
-	std::vector<double> results(50);
+	std::vector<int> results(50);
 
 
 	//17 x 17 matrix
 	graph.fillFromFile("17.txt");
 	for(int i = 0 ; i < 50; i++)
 	{
-		results[i] = graph.distance(graph.simulatedAnnealingInit(SWAP, timeCounter));
+		results[i] = graph.distance(graph.simulatedAnnealingInit(SWAP,100, timeCounter));
 		times[i] = timeCounter.getTime();
+		system("cls");
+		std::cout << "17 x 17 matrix - Simulated Annealing - SWAP - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
 		
 	}
 	saveVectorToFile(times, "17_SWAP_TIMES");
@@ -299,21 +301,99 @@ void menu::testsSA()
 
 	for (int i = 0; i < 50; i++)
 	{
-		results[i] = graph.distance(graph.simulatedAnnealingInit(INSERT, timeCounter));
+		results[i] = graph.distance(graph.simulatedAnnealingInit(INSERT, 100, timeCounter));
 		times[i] = timeCounter.getTime();
-
+		system("cls");
+		std::cout << "17 x 17 matrix - Simulated Annealing - INSERT - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+		
 	}
 	saveVectorToFile(times, "17_INSERT_TIMES");
 	saveVectorToFile(results, "17_INSERT_RESULTS");
 
 	for (int i = 0; i < 50; i++)
 	{
-		results[i] = graph.distance(graph.simulatedAnnealingInit(INVERT, timeCounter));
+		results[i] = graph.distance(graph.simulatedAnnealingInit(INVERT, 100, timeCounter));
 		times[i] = timeCounter.getTime();
-
+		system("cls");
+		std::cout << "17 x 17 matrix - Simulated Annealing - INVERT - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+		
 	}
 	saveVectorToFile(times, "17_INVERT_TIMES");
 	saveVectorToFile(results, "17_INVERT_RESULTS");
+
+	//34 x 34 matrix
+	graph.fillFromFile("34.txt");
+	for (int i = 0; i < 50; i++)
+	{
+		results[i] = graph.distance(graph.simulatedAnnealingInit(SWAP, 100, timeCounter));
+		times[i] = timeCounter.getTime();
+		system("cls");
+		std::cout << "34 x 34 matrix - Simulated Annealing - SWAP - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+		
+	}
+	saveVectorToFile(times, "34_SWAP_TIMES");
+	saveVectorToFile(results, "34_SWAP_RESULTS");
+
+	for (int i = 0; i < 50; i++)
+	{
+		results[i] = graph.distance(graph.simulatedAnnealingInit(INSERT, 100, timeCounter));
+		times[i] = timeCounter.getTime();
+		system("cls");
+		std::cout << "34 x 34 matrix - Simulated Annealing - INSERT - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+		
+	}
+	saveVectorToFile(times, "34_INSERT_TIMES");
+	saveVectorToFile(results, "34_INSERT_RESULTS");
+
+	for (int i = 0; i < 50; i++)
+	{
+		results[i] = graph.distance(graph.simulatedAnnealingInit(INVERT, 100, timeCounter));
+		times[i] = timeCounter.getTime();
+		system("cls");
+		std::cout << "34 x 34 matrix - Simulated Annealing - INVERT - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+		
+	}
+	saveVectorToFile(times, "34_INVERT_TIMES");
+	saveVectorToFile(results, "34_INVERT_RESULTS");
+
+	//56 x 56 matrix
+	graph.fillFromFile("56.txt");
+	for (int i = 0; i < 50; i++)
+	{
+		results[i] = graph.distance(graph.simulatedAnnealingInit(SWAP, 10000, timeCounter));
+		times[i] = timeCounter.getTime();
+		system("cls");
+		std::cout << "56 x 56 matrix - Simulated Annealing - SWAP - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+		
+	}
+	saveVectorToFile(times, "56_SWAP_TIMES");
+	saveVectorToFile(results, "56_SWAP_RESULTS");
+
+	//70 x 70 matrix
+	graph.fillFromFile("70.txt");
+	for (int i = 0; i < 50; i++)
+	{
+		results[i] = graph.distance(graph.simulatedAnnealingInit(SWAP, 10000, timeCounter));
+		times[i] = timeCounter.getTime();
+		system("cls");
+		std::cout << "70 x 70 matrix - Simulated Annealing - SWAP - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+		
+	}
+	saveVectorToFile(times, "70_SWAP_TIMES");
+	saveVectorToFile(results, "70_SWAP_RESULTS");
+
+	//171 x 171 matrix
+	graph.fillFromFile("171.txt");
+	for (int i = 0; i < 50; i++)
+	{
+		results[i] = graph.distance(graph.simulatedAnnealingInit(SWAP, 10000, timeCounter));
+		times[i] = timeCounter.getTime();
+		system("cls");
+		std::cout << "171 x 171 matrix - Simulated Annealing - SWAP - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+		
+	}
+	saveVectorToFile(times, "171_SWAP_TIMES");
+	saveVectorToFile(results, "171_SWAP_RESULTS");
 }
 
 void menu::mainMenu2()
@@ -321,7 +401,7 @@ void menu::mainMenu2()
 	graph = matrix();
 
 	int choice1 = 0;
-	const int choices = 6;
+	const int choices = 7;
 	double time = 10.0;
 	//enum is located in matrix.h
 	neighbourhoodType type = SWAP;
@@ -330,13 +410,15 @@ void menu::mainMenu2()
 	std::string filename;
 	do
 	{
+		if (choice1 != 1 && choice1 <= 4) system("cls");
 		std::cout << std::endl << "==== MAIN MENU ====" << std::endl;
-		std::cout << "1. Create graph from file ..." << std::endl;
-		std::cout << "2. Set time for stop criterion (now: "<< time  << ") ..." << std::endl;
-		std::cout << "3. Neighbourhood type choice (now: "<< (type == neighbourhoodType::SWAP ? "SWAP" :
-														type == neighbourhoodType::INSERT ? "INSERT" : "INVERT")  << std::endl;
-		std::cout << "4. Run Simulated Annealing" << std::endl;
-		std::cout << "5. Run tests" << std::endl;
+		std::cout << "1. Show matrix " << std::endl;
+		std::cout << "2. Create graph from file ..." << std::endl;
+		std::cout << "3. Set time for stop criterion (now: "<< time  << ") ..." << std::endl;
+		std::cout << "4. Neighbourhood type choice (now: "<< (type == neighbourhoodType::SWAP ? "SWAP" :
+														type == neighbourhoodType::INSERT ? "INSERT" : "INVERT")  << ") ... " << std::endl;
+		std::cout << "5. Run Simulated Annealing" << std::endl;
+		std::cout << "6. Run tests" << std::endl;
 
 		std::cout << choices << ". Quit." << std::endl;
 
@@ -351,6 +433,9 @@ void menu::mainMenu2()
 		switch (choice1)
 		{
 		case 1:
+			graph.show();
+			break;
+		case 2:
 			do
 			{
 				std::cout << "Insert filename with file type: ";
@@ -359,9 +444,8 @@ void menu::mainMenu2()
 			} while (filename.empty());
 
 			graph.fillFromFile(filename);
-			graphMenu();
 			break;
-		case 2:
+		case 3:
 			do
 			{
 				std::cout << "Insert time in seconds: ";
@@ -369,7 +453,7 @@ void menu::mainMenu2()
 				std::cin.get();
 			} while (time <= 0.0);
 			break;
-		case 3:
+		case 4:
 			std::cout << "1. \"Swap\" type neighbourhood" << std::endl;
 			std::cout << "2. \"Insert\" type neighbourhood" << std::endl;
 			std::cout << "3. \"Invert\" type neighbourhood" << std::endl;
@@ -386,18 +470,19 @@ void menu::mainMenu2()
 			else if (choice1 == 3) type = INVERT;
 
 			break;
-		case 4:
+		case 5:
+			std::cout << "Calculating..." << std::endl;
 			minCycle = graph.simulatedAnnealingInit();
 			printCycle("Cycle - Sim. Annealing", minCycle);
 			std::cout << "Distance of cycle: " << graph.distance(minCycle) << std::endl;;
 			break;
-		case 5:
+		case 6:
 			testsSA();
 			break;
 		default:
 			break;
 		}
-	} while (choice1 != 7);
+	} while (choice1 != 6);
 }
 
 void menu::printCycle(std::string title, std::vector<int> cycle)
@@ -414,14 +499,40 @@ void menu::printCycle(std::string title, std::vector<int> cycle)
 
 void menu::saveVectorToFile(std::vector<double> vector, std::string filename)
 {
+	std::string generatedFilesFolderPath = "results/";
 	std::ofstream write;
-	write.open(filename);
+	write.open(generatedFilesFolderPath + filename + ".txt");
 	if (write.is_open())
 	{
 		for (double element : vector)
 		{
 			write << element << "\n";
 		}
+	}
+	else
+	{
+		std::cout << "Error while opening file: " << generatedFilesFolderPath + filename + ".txt" << std::endl;
+		std::cin.get();
+	}
+	write.close();
+}
+
+void menu::saveVectorToFile(std::vector<int> vector, std::string filename)
+{
+	std::string generatedFilesFolderPath = "results\\";
+	std::ofstream write;
+	write.open(generatedFilesFolderPath + filename + ".txt");
+	if (write.is_open())
+	{
+		for (double element : vector)
+		{
+			write << element << "\n";
+		}
+	}
+	else
+	{
+		std::cout << "Error while opening file: " << generatedFilesFolderPath + filename + ".txt" << std::endl;
+		std::cin.get();
 	}
 	write.close();
 }
