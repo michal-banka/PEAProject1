@@ -27,7 +27,7 @@ void TimeCounter::start()
 	}
 
 	// divide 1000 to get miliseconds
-	pcFrequency = (double)largeInt.QuadPart / 1000;
+	pcFrequency = (double)largeInt.QuadPart ;
 
 	QueryPerformanceCounter(&largeInt);
 	counterStart = largeInt.QuadPart;
@@ -37,7 +37,6 @@ double TimeCounter::stop()
 {
 	LARGE_INTEGER largeInt;
 	QueryPerformanceCounter(&largeInt);
-
 	time = double(largeInt.QuadPart - counterStart) / pcFrequency;
 	return double(largeInt.QuadPart - counterStart) / pcFrequency;
 }
