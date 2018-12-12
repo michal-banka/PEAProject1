@@ -322,20 +322,20 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 	//Neighbourhood Size - number of possible unique transformations of parent cycle,
 	//				size for /swap/ type is n(n-1)/2
 	//Temp. Length - is value that indicates how often temperature should be decreased,
-	//				should be proportional to Neighbourhood Size ( 1:2 here)
+	//				should be proportional to Neighbourhood Size ( 1:1 here)
 	//Temperature - starting temp. might be max or average - discribed in other functions
 	//				lowering temp. is 0.95 * lastTemp, after every next step
 	//Time counter - creates condition that prevent from too long calculations
 	//Last Change - this is indicator of how many transformations ago was found better neighbour than actual cycle
 	TimeCounter counter;
 	cycleMin = cycle;
-	const int tempLength = cycle.size()*(cycle.size() - 1) / 2 /2;
+	const int tempLength = cycle.size()*(cycle.size() - 1) / 2;
 	double temp = tempStart;
 	int lastChange = 0;
 	int distanceCycleMin = distance(cycleMin);
 	counter.start();
 
-	while (counter.stop() < stopTime && lastChange < 750 && temp > tempMin)
+	while (counter.stop() < stopTime && lastChange < 1000 && temp > tempMin)
 	{
 		//loop is here to keep temperature on stable level for tempLength number of transformations
 		//this will create "steps" of temperature during algorithm
@@ -366,7 +366,7 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 
 			//increment last change, if it's too big then leave 'for' loop
 			lastChange++;
-			if (lastChange >= 750)
+			if (lastChange >= 1000)
 			{
 				break;
 			}
@@ -908,7 +908,7 @@ std::vector<int> matrix::branchAndBoundInit(TimeCounter& counter)
 std::vector<int> matrix::simulatedAnnealingInit()
 {
 	std::vector<int> minCycle;
-	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.01, 30, SWAP);
+	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.001, 30, SWAP);
 	return minCycle;
 }
 
@@ -916,7 +916,7 @@ std::vector<int> matrix::simulatedAnnealingInit(neighbourhoodType type, double m
 {
 	std::vector<int> minCycle;
 	counter.start();
-	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.01, maxTime*1000, type);
+	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.001, maxTime*1000, type);
 	counter.stop();
 	return minCycle;
 }

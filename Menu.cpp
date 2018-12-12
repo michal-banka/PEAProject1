@@ -394,6 +394,9 @@ void menu::testsSA()
 	}
 	saveVectorToFile(times, "171_SWAP_TIMES");
 	saveVectorToFile(results, "171_SWAP_RESULTS");
+
+	system("cls");
+	std::cout << "171 x 171 matrix - Simulated Annealing - SWAP - working ... [100% done]" << std::endl;
 }
 
 void menu::mainMenu2()
@@ -482,7 +485,7 @@ void menu::mainMenu2()
 		default:
 			break;
 		}
-	} while (choice1 != 6);
+	} while (choice1 != choices);
 }
 
 void menu::printCycle(std::string title, std::vector<int> cycle)
