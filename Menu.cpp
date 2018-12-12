@@ -278,3 +278,150 @@ void menu::tests2()
 	}
 	write.close();
 }
+
+void menu::testsSA()
+{
+	TimeCounter timeCounter;
+	std::vector<double> times(50);
+	std::vector<double> results(50);
+
+
+	//17 x 17 matrix
+	graph.fillFromFile("17.txt");
+	for(int i = 0 ; i < 50; i++)
+	{
+		results[i] = graph.distance(graph.simulatedAnnealingInit(SWAP, timeCounter));
+		times[i] = timeCounter.getTime();
+		
+	}
+	saveVectorToFile(times, "17_SWAP_TIMES");
+	saveVectorToFile(results, "17_SWAP_RESULTS");
+
+	for (int i = 0; i < 50; i++)
+	{
+		results[i] = graph.distance(graph.simulatedAnnealingInit(INSERT, timeCounter));
+		times[i] = timeCounter.getTime();
+
+	}
+	saveVectorToFile(times, "17_INSERT_TIMES");
+	saveVectorToFile(results, "17_INSERT_RESULTS");
+
+	for (int i = 0; i < 50; i++)
+	{
+		results[i] = graph.distance(graph.simulatedAnnealingInit(INVERT, timeCounter));
+		times[i] = timeCounter.getTime();
+
+	}
+	saveVectorToFile(times, "17_INVERT_TIMES");
+	saveVectorToFile(results, "17_INVERT_RESULTS");
+}
+
+void menu::mainMenu2()
+{
+	graph = matrix();
+
+	int choice1 = 0;
+	const int choices = 6;
+	double time = 10.0;
+	//enum is located in matrix.h
+	neighbourhoodType type = SWAP;
+	std::vector<int> minCycle;
+
+	std::string filename;
+	do
+	{
+		std::cout << std::endl << "==== MAIN MENU ====" << std::endl;
+		std::cout << "1. Create graph from file ..." << std::endl;
+		std::cout << "2. Set time for stop criterion (now: "<< time  << ") ..." << std::endl;
+		std::cout << "3. Neighbourhood type choice (now: "<< (type == neighbourhoodType::SWAP ? "SWAP" :
+														type == neighbourhoodType::INSERT ? "INSERT" : "INVERT")  << std::endl;
+		std::cout << "4. Run Simulated Annealing" << std::endl;
+		std::cout << "5. Run tests" << std::endl;
+
+		std::cout << choices << ". Quit." << std::endl;
+
+		do
+		{
+			std::cout << "Your choice: ";
+			std::cin >> choice1;
+			std::cin.get();
+			std::cout << std::endl;
+		} while (choice1 <= 0 || choice1 > choices);
+
+		switch (choice1)
+		{
+		case 1:
+			do
+			{
+				std::cout << "Insert filename with file type: ";
+				std::cin >> filename;
+				std::cin.get();
+			} while (filename.empty());
+
+			graph.fillFromFile(filename);
+			graphMenu();
+			break;
+		case 2:
+			do
+			{
+				std::cout << "Insert time in seconds: ";
+				std::cin >> time;
+				std::cin.get();
+			} while (time <= 0.0);
+			break;
+		case 3:
+			std::cout << "1. \"Swap\" type neighbourhood" << std::endl;
+			std::cout << "2. \"Insert\" type neighbourhood" << std::endl;
+			std::cout << "3. \"Invert\" type neighbourhood" << std::endl;
+			std::cout << "4. Back ..." << std::endl;
+			do
+			{
+				std::cout << "Insert number of type: ";
+				std::cin >> choice1;
+				std::cin.get();
+			} while (choice1 <= 0 || choice1 > 4);
+
+			if (choice1 == 1) type = SWAP;
+			else if (choice1 == 2) type = INSERT;
+			else if (choice1 == 3) type = INVERT;
+
+			break;
+		case 4:
+			minCycle = graph.simulatedAnnealingInit();
+			printCycle("Cycle - Sim. Annealing", minCycle);
+			std::cout << "Distance of cycle: " << graph.distance(minCycle) << std::endl;;
+			break;
+		case 5:
+			testsSA();
+			break;
+		default:
+			break;
+		}
+	} while (choice1 != 7);
+}
+
+void menu::printCycle(std::string title, std::vector<int> cycle)
+{
+	if (cycle.empty()) return;
+
+	std::cout << title << ": ";
+	for (int element : cycle)
+	{
+		std::cout << element << " <-> ";
+	}
+	std::cout << cycle[0] << std::endl;
+}
+
+void menu::saveVectorToFile(std::vector<double> vector, std::string filename)
+{
+	std::ofstream write;
+	write.open(filename);
+	if (write.is_open())
+	{
+		for (double element : vector)
+		{
+			write << element << "\n";
+		}
+	}
+	write.close();
+}
