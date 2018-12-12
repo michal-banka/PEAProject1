@@ -22,7 +22,6 @@ private:
 	void branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle);
 	void bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& minCycle);
 	//Project2
-	void simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin, double stopTime);
 	void simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin, double stopTime, neighbourhoodType neighbourhoodType);
 	double getTemperatureStartAverage(int samplesSize);
 	double getTemperatureStartMax(int samplesSize);
