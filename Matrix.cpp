@@ -322,75 +322,69 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 	//Neighbourhood Size - number of possible unique transformations of parent cycle,
 	//				size for /swap/ type is n(n-1)/2
 	//Temp. Length - is value that indicates how often temperature should be decreased,
-	//				should be proportional to Neighbourhood Size ( 1:2 here - todo)
-	//Temperature - starting temp. described in next func.
-	//				lowering temp. is 0.9 * lastTemp
-	//iteration is number of times when temp. was decreased
-
-	//Time counter - create condition  that prevent form too long calclations
+	//				should be proportional to Neighbourhood Size ( 1:2 here)
+	//Temperature - starting temp. might be max or average - discribed in other functions
+	//				lowering temp. is 0.95 * lastTemp, after every next step
+	//Time counter - creates condition that prevent from too long calculations
+	//Last Change - this is indicator of how many transformations ago was found better neighbour than actual cycle
 	TimeCounter counter;
-
 	cycleMin = cycle;
-	const int tempLength = cycle.size()*(cycle.size() - 1) / 2;
+	const int tempLength = cycle.size()*(cycle.size() - 1) / 2 /2;
 	double temp = tempStart;
 	int lastChange = 0;
-	std::vector<int> cycleNeighbour;
 	int distanceCycleMin = distance(cycleMin);
-
 	counter.start();
-	while (counter.stop() < stopTime && lastChange < 1000 && temp > tempMin)
+
+	while (counter.stop() < stopTime && lastChange < 750 && temp > tempMin)
 	{
-		std::cout << temp << std::endl;
-		std::cout << counter.stop() << " / " << stopTime << std::endl;
-		//check neighbours for const temp 
-		//after for decrease temp
+		//loop is here to keep temperature on stable level for tempLength number of transformations
+		//this will create "steps" of temperature during algorithm
 		for (int i = 0; i < tempLength; i++)
 		{
-			//choose neighbour
-			//neighbour will be randomly chosen
-			cycleNeighbour = getRandomTransformationOfVector(cycle, neighbourhoodType);
-
-			//calculation done here for optimization
+			//choose neighbour randomly and transform with chosen type, then calculate distances
+			//calculations are needed becouse of optimization
+			std::vector<int> cycleNeighbour = getRandomTransformationOfVector(cycle, neighbourhoodType);
 			int distanceCycle = distance(cycle);
 			int distanceCycleNeighbour = distance(cycleNeighbour);
 
-			//if neighbour is better or the same then just swap or
-			//if neighbour is worse then swap with some probability
+			//if neighbour is better or the same then just swap 
+			//or if neighbour is worse then swap with some probability
 			if (distanceCycleNeighbour - distanceCycle <= 0 ||
 				distanceCycleNeighbour - distanceCycle > 0 && (double)rand() / RAND_MAX < exp(-(distanceCycleNeighbour - distanceCycle) / temp))
 			{
 				cycle = cycleNeighbour;
 				lastChange = 0;
+
+				//if new cycle is the shortest found then save it
+				if (distanceCycleNeighbour < distanceCycleMin)
+				{
+					cycleMin = cycle;
+					distanceCycleMin = distanceCycleNeighbour;
+				}
+
 			}
 
-			//save the best found cycle
-			if (distanceCycleNeighbour < distanceCycleMin)
-			{
-				cycleMin = cycle;
-				distanceCycleMin = distanceCycleNeighbour;
-			}
-
+			//increment last change, if it's too big then leave 'for' loop
 			lastChange++;
-			if (lastChange == 500)
+			if (lastChange >= 750)
 			{
-				std::cout << "Finishing due to long lack of improvement." << std::endl;
 				break;
 			}
 		}
 
-		//decrease temp
+		//decrease temp when 'step' is over
 		temp *= 0.95;
 	}
 }
 
 double matrix::getTemperatureStartAverage(int samplesSize)
 {
-	//Starting temp. will be average of differences bettwen n cycles and theirs neighbours
+	//Starting temp. will be average of differences between n cycles and theirs neighbours
 	double sumTemp = 0.0;
 	std::vector<int> cycleParent = randomCycle();
 	for (int i = 0 ; i < samplesSize; i++)
 	{
-		sumTemp += abs(distance(cycleParent) - distance(getRandomTransformationOfVector(cycleParent)));
+		sumTemp += abs(distance(cycleParent) - distance(getRandomTransformationOfVector(cycleParent, SWAP)));
 		cycleParent = randomCycle();
 	}
 
@@ -400,11 +394,12 @@ double matrix::getTemperatureStartAverage(int samplesSize)
 
 double matrix::getTemperatureStartMax(int samplesSize)
 {
+	//Starting temp. will be maximum of differences between n cycles and theirs neighbours
 	double maxTemp = 0.0;
 	std::vector<int> cycleParent = randomCycle();
 	for (int i = 0; i < samplesSize; i++)
 	{
-		int delta = abs(distance(cycleParent) - distance(getRandomTransformationOfVector(cycleParent)));
+		int delta = abs(distance(cycleParent) - distance(getRandomTransformationOfVector(cycleParent, SWAP)));
 		if (delta > maxTemp)
 		{
 			maxTemp = delta;
@@ -413,15 +408,6 @@ double matrix::getTemperatureStartMax(int samplesSize)
 	}
 	return maxTemp;
 }
-
-/*double matrix::getTemperature(int iteration, double tempStart, double coolingSpeed)
-{
-	for (int i = 0 ; i < iteration; i++)
-	{
-		tempStart *= coolingSpeed;
-	}
-	return tempStart;
-}*/
 
 std::vector<int> matrix::randomCycle()
 {
@@ -452,6 +438,11 @@ std::vector<int> matrix::getRandomTransformationOfVector(std::vector<int> vector
 	{
 		idx2 = rand() % vector.size();
 	}
+	//preparation
+	if (idx1 > idx2)
+	{
+		std::swap(idx1, idx2);
+	}
 
 	//transform
 	if (type == SWAP)
@@ -461,9 +452,8 @@ std::vector<int> matrix::getRandomTransformationOfVector(std::vector<int> vector
 	else if (type == INSERT)
 	{
 		//insert and erase methods could be used but this would be very inefficent due to multiply realocation of memory
-		
 		int val = vector[idx2];
-		for(int i = vector.size() ; i > vector[idx1]; i--)
+		for(int i = idx2 ; i > idx1; i--)
 		{
 			vector[i] = vector[i - 1];
 		}
@@ -471,12 +461,6 @@ std::vector<int> matrix::getRandomTransformationOfVector(std::vector<int> vector
 	}
 	else if (type == INVERT)
 	{
-		//preparation for next while
-		if (idx1 > idx2)
-		{
-			std::swap(idx1, idx2);
-		}
-
 		//invert
 		while (idx1 < idx2)
 		{
@@ -924,15 +908,15 @@ std::vector<int> matrix::branchAndBoundInit(TimeCounter& counter)
 std::vector<int> matrix::simulatedAnnealingInit()
 {
 	std::vector<int> minCycle;
-	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.01, 10000);
+	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.01, 30, SWAP);
 	return minCycle;
 }
 
-std::vector<int> matrix::simulatedAnnealingInit(neighbourhoodType type, TimeCounter& counter)
+std::vector<int> matrix::simulatedAnnealingInit(neighbourhoodType type, double maxTime, TimeCounter& counter)
 {
 	std::vector<int> minCycle;
 	counter.start();
-	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.01, 10000);
+	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.01, maxTime*1000, type);
 	counter.stop();
 	return minCycle;
 }

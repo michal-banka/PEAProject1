@@ -25,7 +25,6 @@ private:
 	void simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin, double stopTime, neighbourhoodType neighbourhoodType);
 	double getTemperatureStartAverage(int samplesSize);
 	double getTemperatureStartMax(int samplesSize);
-	//double getTemperature(int iteration, double tempStart, double coolingSpeed);
 	
 public:
 	matrix();
@@ -68,7 +67,7 @@ public:
 
 	//Project 2 algorithms
 	std::vector<int> simulatedAnnealingInit(/*default neighbourhood type is SWAP*/);
-	std::vector<int> simulatedAnnealingInit(neighbourhoodType type, TimeCounter& counter);
+	std::vector<int> simulatedAnnealingInit(neighbourhoodType type, double maxTime, TimeCounter& counter);
 	//std::vector<int> tabuSearch();
 
 	matrix& operator= (const matrix& m);
