@@ -385,6 +385,74 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 	}
 }
 
+void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin,
+	double stopTime, neighbourhoodType neighbourhoodType)
+{
+	//Neighbourhood - group of cycles that can be created from transformation of parent cycle
+	//Neighbourhood Size - number of possible unique transformations of parent cycle,
+	//				size for /swap/ type is n(n-1)/2
+	//Temp. Length - is value that indicates how often temperature should be decreased,
+	//				should be proportional to Neighbourhood Size ( 1:2 here - todo)
+	//Temperature - starting temp. described in next func.
+	//				lowering temp. is 0.9 * lastTemp
+	//iteration is number of times when temp. was decreased
+
+	//Time counter - create condition  that prevent form too long calclations
+	TimeCounter counter;
+
+	cycleMin = cycle;
+	const int tempLength = cycle.size()*(cycle.size() - 1) / 2;
+	double temp = tempStart;
+	int lastChange = 0;
+	std::vector<int> cycleNeighbour;
+	int distanceCycleMin = distance(cycleMin);
+
+	counter.start();
+	while (counter.stop() < stopTime && lastChange < 1000 && temp > tempMin)
+	{
+		std::cout << temp << std::endl;
+		std::cout << counter.stop() << " / " << stopTime << std::endl;
+		//check neighbours for const temp 
+		//after for decrease temp
+		for (int i = 0; i < tempLength; i++)
+		{
+			//choose neighbour
+			//neighbour will be randomly chosen
+			cycleNeighbour = getRandomTransformationOfVector(cycle, neighbourhoodType);
+
+			//calculation done here for optimization
+			int distanceCycle = distance(cycle);
+			int distanceCycleNeighbour = distance(cycleNeighbour);
+
+			//if neighbour is better or the same then just swap or
+			//if neighbour is worse then swap with some probability
+			if (distanceCycleNeighbour - distanceCycle <= 0 ||
+				distanceCycleNeighbour - distanceCycle > 0 && (double)rand() / RAND_MAX < exp(-(distanceCycleNeighbour - distanceCycle) / temp))
+			{
+				cycle = cycleNeighbour;
+				lastChange = 0;
+			}
+
+			//save the best found cycle
+			if (distanceCycleNeighbour < distanceCycleMin)
+			{
+				cycleMin = cycle;
+				distanceCycleMin = distanceCycleNeighbour;
+			}
+
+			lastChange++;
+			if (lastChange == 500)
+			{
+				std::cout << "Finishing due to long lack of improvement." << std::endl;
+				break;
+			}
+		}
+
+		//decrease temp
+		temp *= 0.95;
+	}
+}
+
 double matrix::getTemperatureStartAverage(int samplesSize)
 {
 	//Starting temp. will be average of differences bettwen n cycles and theirs neighbours
@@ -416,14 +484,14 @@ double matrix::getTemperatureStartMax(int samplesSize)
 	return maxTemp;
 }
 
-double matrix::getTemperature(int iteration, double tempStart, double coolingSpeed)
+/*double matrix::getTemperature(int iteration, double tempStart, double coolingSpeed)
 {
 	for (int i = 0 ; i < iteration; i++)
 	{
 		tempStart *= coolingSpeed;
 	}
 	return tempStart;
-}
+}*/
 
 std::vector<int> matrix::randomCycle()
 {
@@ -444,18 +512,48 @@ std::vector<int> matrix::randomCycle()
 	return cycle;
 }
 
-std::vector<int> matrix::getRandomTransformationOfVector(std::vector<int> vector)
+std::vector<int> matrix::getRandomTransformationOfVector(std::vector<int> vector , neighbourhoodType type)
 {
-	//swap two elements in vector
+	//rand elements
 	int idx1 = rand() % vector.size();
 	int idx2 = rand() % vector.size();
 	
 	while (idx1 == idx2)
 	{
 		idx2 = rand() % vector.size();
-	} 
+	}
 
-	std::swap(vector[idx1], vector[idx2]);
+	//transform
+	if (type == SWAP)
+	{
+		std::swap(vector[idx1], vector[idx2]);
+	}
+	else if (type == INSERT)
+	{
+		//insert and erase methods could be used but this would be very inefficent due to multiply realocation of memory
+		
+		int val = vector[idx2];
+		for(int i = vector.size() ; i > vector[idx1]; i--)
+		{
+			vector[i] = vector[i - 1];
+		}
+		vector[idx1] = val;
+	}
+	else if (type == INVERT)
+	{
+		//preparation for next while
+		if (idx1 > idx2)
+		{
+			std::swap(idx1, idx2);
+		}
+
+		//invert
+		while (idx1 < idx2)
+		{
+			std::swap(vector[idx1++], vector[idx2--]);
+		}
+	}
+	
 	return vector;
 }
 
@@ -897,6 +995,15 @@ std::vector<int> matrix::simulatedAnnealingInit()
 {
 	std::vector<int> minCycle;
 	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.01, 10000);
+	return minCycle;
+}
+
+std::vector<int> matrix::simulatedAnnealingInit(neighbourhoodType type, TimeCounter& counter)
+{
+	std::vector<int> minCycle;
+	counter.start();
+	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.01, 10000);
+	counter.stop();
 	return minCycle;
 }
 
