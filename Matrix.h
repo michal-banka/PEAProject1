@@ -13,7 +13,7 @@ private:
 	int upperBound();
 	void branchAndBound(std::vector<int> cycle, int& upperBound, std::vector<int>& minCycle);
 	void bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& minCycle);
-	void simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin);
+	void simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin, double stopTime);
 	double getTemperatureStartAverage(int samplesSize);
 	double getTemperatureStartMax(int samplesSize);
 	double getTemperature(int iteration, double tempStart, double coolingSpeed);

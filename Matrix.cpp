@@ -315,7 +315,7 @@ void matrix::bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& 
 	}
 }
 
-void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin)
+void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin, double stopTime)
 {
 	//Neighbourhood - every cycle that can be created by transformation of parent cycle
 	//Transformation - trans. type is /swap/
@@ -327,16 +327,23 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 	//				lowering temp. is 0.9 * lastTemp
 	//iteration is number of times when temp. was decreased
 
+	//Time counter - create condition  that prevent form too long calclations
+	TimeCounter counter;
+	
 	cycleMin = cycle;
 	const int tempLength = cycle.size()*(cycle.size() - 1)/2;
 	double temp = tempStart;
 	int lastChange = 0;
 	std::vector<int> cycleNeighbour;
 	int distanceCycleMin = distance(cycleMin);
-	
-	while (lastChange < 500 && temp > tempMin)
+	int distanceCycle;
+	int distanceCycleNeighbour;
+
+	counter.start();
+	while (counter.stop() < stopTime && lastChange < 1000 && temp > tempMin)
 	{
 		std::cout << temp << std::endl;
+		std::cout << counter.stop() << " / " << stopTime << std::endl;
 		//check neighbours for const temp 
 		//after for decrease temp
 		for (int i = 0; i < tempLength; i++)
@@ -346,13 +353,11 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 			cycleNeighbour = getRandomTransformationOfVector(cycle);
 			
 			//calculation done here for optimization
-			int distanceCycle = distance(cycle);
-			int distanceCycleNeighbour = distance(cycleNeighbour);
+			distanceCycle = distance(cycle);
+			distanceCycleNeighbour = distance(cycleNeighbour);
 
 			//if neighbour is better or the same then just swap or
-			//if neighbour is worse then MAYBE swap
-			//	--why static_cast<double> generate always 0 ?
-		
+			//if neighbour is worse then swap with some probability
 			if (distanceCycleNeighbour - distanceCycle <= 0 || 
 				distanceCycleNeighbour - distanceCycle > 0 && (double)rand() / RAND_MAX < exp(-(distanceCycleNeighbour - distanceCycle) / temp))
 			{
@@ -368,21 +373,15 @@ void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleM
 			}
 
 			lastChange++;
-			if (lastChange == 1000) break;
+			if (lastChange == 500)
+			{
+				std::cout << "Finishing due to long lack of improvement." << std::endl;
+				break;
+			}
 		}
 
-		//decrease temp and increase lastChange indicator
-		
+		//decrease temp
 		temp *= 0.95;
-		/*std::cout << "======================================" << std::endl;
-		std::cout << temp << std::endl;
-		std::cout << "======================================" << std::endl;
-		printCycle(cycle);
-		std::cout << "======================================" << std::endl;
-		printCycle(cyclePrevious);
-		std::cout << "======================================" << std::endl;
-		std::cin.get();*/
-		//finish when alghoritm has so low probability of moving to worse solution that it didn't happen
 	}
 }
 
@@ -448,11 +447,13 @@ std::vector<int> matrix::randomCycle()
 std::vector<int> matrix::getRandomTransformationOfVector(std::vector<int> vector)
 {
 	//swap two elements in vector
-	int idx1 = rand() % vector.size(), idx2 = 0;
-	do
+	int idx1 = rand() % vector.size();
+	int idx2 = rand() % vector.size();
+	
+	while (idx1 == idx2)
 	{
 		idx2 = rand() % vector.size();
-	} while (idx1 == idx2);
+	} 
 
 	std::swap(vector[idx1], vector[idx2]);
 	return vector;
@@ -895,7 +896,7 @@ std::vector<int> matrix::branchAndBoundInit(TimeCounter& counter)
 std::vector<int> matrix::simulatedAnnealingInit()
 {
 	std::vector<int> minCycle;
-	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.01);
+	simulatedAnnealing(randomCycle(), minCycle, getTemperatureStartAverage(1000), 0.01, 10000);
 	return minCycle;
 }
 
