@@ -47,5 +47,6 @@
     <Text Include="56.txt" />
     <Text Include="171.txt" />
     <Text Include="70.txt" />
+    <Text Include="34.txt" />
   </ItemGroup>
 </Project>
