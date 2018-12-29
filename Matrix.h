@@ -9,6 +9,8 @@ enum neighbourhoodType
 	INVERT
 };
 
+
+
 class matrix
 {
 private:
@@ -25,6 +27,8 @@ private:
 	void simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin, double stopTime, neighbourhoodType neighbourhoodType);
 	double getTemperatureStartAverage(int samplesSize);
 	double getTemperatureStartMax(int samplesSize);
+	//Project3
+	void geneticAlgorithm(const int populationSize, double stopTime, std::vector<int> minCycle);
 	
 public:
 	matrix();

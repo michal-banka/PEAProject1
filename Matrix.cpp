@@ -226,8 +226,6 @@ void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector
 				//upperBound is this distance/lowerBound now
 				if (dist < upperBound)
 				{
-					//if this is the shortest found cycle
-					//upperBound is this distance/lowerBound now
 					upperBound = dist;
 					minCycle = cycle;
 				}
@@ -238,7 +236,7 @@ void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector
 
 	//choose next vertex to add
 	//this will represent children: last vertex (new) and lowerbound for each of them
-	//use this constructor to prevent realocating memory in for
+	//use this constructor to prevent realocating memory in loop
 	std::vector<std::pair<int, int>> possible(vertices-cycle.size(),{0,0});
 	int k = 0;
 
@@ -267,7 +265,6 @@ void matrix::branchAndBound(std::vector<int> cycle, int& upperBound, std::vector
 	{
 		if (element.second < upperBound)
 		{
-			
 			cycle.push_back(element.first);
 			branchAndBound(cycle, upperBound, minCycle);
 			cycle.pop_back();
@@ -407,6 +404,27 @@ double matrix::getTemperatureStartMax(int samplesSize)
 		cycleParent = randomCycle();
 	}
 	return maxTemp;
+}
+
+void matrix::geneticAlgorithm(const int populationSize, double stopTime, std::vector<int> minCycle)
+{
+	//set random population - array of cycles
+	std::vector<std::vector<int>> population (populationSize);
+	for(int i = 0; i < populationSize; i++)
+	{
+		population[i] = randomCycle();
+	}
+
+	//sort poplation by cycle distance
+
+	//std::sort has nlog(n) complexity and n will be small
+	//& in lambda to get methods distance() from outside of its scope
+	std::sort(population.begin(), population.end(), [&](std::vector<int> vec1, std::vector<int> vec2)->bool
+	{
+		return (distance(vec1) < distance(vec2));
+	});
+
+
 }
 
 std::vector<int> matrix::randomCycle()
