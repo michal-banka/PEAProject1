@@ -410,14 +410,14 @@ void matrix::geneticAlgorithm(const int populationSize, double stopTime, std::ve
 {
 	//set random population - array of cycles
 	std::vector<std::vector<int>> population (populationSize);
-	for(int i = 0; i < populationSize; i++)
+	for (std::vector<int> element : population)
 	{
-		population[i] = randomCycle();
+		element = randomCycle();	
 	}
 
 	//sort poplation by cycle distance
 
-	//std::sort has nlog(n) complexity and n will be small
+	//std::sort has nlog(n) complexity
 	//& in lambda to get methods distance() from outside of its scope
 	std::sort(population.begin(), population.end(), [&](std::vector<int> vec1, std::vector<int> vec2)->bool
 	{
@@ -425,6 +425,50 @@ void matrix::geneticAlgorithm(const int populationSize, double stopTime, std::ve
 	});
 
 
+}
+
+std::vector<int> matrix::crossingHalfes(std::vector<int> parent1, std::vector<int> parent2)
+{
+	//child of parents will be:
+	// -first half of vertices in cycle will be the same as first half of parent1's
+	// -second half of child's vertices will be filled in the same order of missing vertices as in parent2
+
+	int inserted = parent1.size()/2;
+	bool found = false;
+
+	//copy first half from parent1
+	std::vector<int> child(parent1.size(), -1);
+	for (int i = 0; i < child.size() / 2; i++)
+	{
+		child[i] = parent1[i];
+	}
+
+	for (int element : parent2)
+	{
+		found = false;
+		for(int i = 0 ; i < inserted; i++)
+		{
+			std::cout << element << " " << child[i] << std::endl;
+
+			if (element == child[i])
+			{
+				std::cout << "SAME!!!!!" << std::endl;
+				found = true;
+				break;
+			}
+
+			std::cin.get();
+		}
+
+		if (!found)
+		{
+			child[inserted++] = element;
+		}
+		printCycle(child);
+		std::cin.get();
+	}
+
+	return child;
 }
 
 std::vector<int> matrix::randomCycle()

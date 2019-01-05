@@ -30,6 +30,7 @@ private:
 	//Project3
 	void geneticAlgorithm(const int populationSize, double stopTime, std::vector<int> minCycle);
 	
+	
 public:
 	matrix();
 	matrix(int vertices, int** tab);
@@ -73,6 +74,9 @@ public:
 	std::vector<int> simulatedAnnealingInit(/*default neighbourhood type is SWAP*/);
 	std::vector<int> simulatedAnnealingInit(neighbourhoodType type, double maxTime, TimeCounter& counter);
 	//std::vector<int> tabuSearch();
+
+	//Project 3 algorithms
+	std::vector<int> crossingHalfes(std::vector<int> parent1, std::vector<int> parent2);
 
 	matrix& operator= (const matrix& m);
 };
