@@ -28,8 +28,9 @@ private:
 	double getTemperatureStartAverage(int samplesSize);
 	double getTemperatureStartMax(int samplesSize);
 	//Project3
-	void geneticAlgorithm(const int populationSize, double stopTime, std::vector<int> minCycle);
-	
+	void geneticAlgorithm(const int populationSize, int generations, double stopTime, std::vector<int>& minCycle);
+	std::vector<int> crossingHalfes(std::vector<int> parent1, std::vector<int> parent2);
+	std::vector<int> mutationRandom(std::vector<int> parent, int levelsOfMutation);
 	
 public:
 	matrix();
@@ -76,7 +77,7 @@ public:
 	//std::vector<int> tabuSearch();
 
 	//Project 3 algorithms
-	std::vector<int> crossingHalfes(std::vector<int> parent1, std::vector<int> parent2);
+	std::vector<int> geneticAlgorithmInit();
 
 	matrix& operator= (const matrix& m);
 };
