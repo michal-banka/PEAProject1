@@ -430,7 +430,7 @@ void matrix::geneticAlgorithm(int populationSize, int generations, double stopTi
 	{
 		population[i] = randomCycle();
 	}
-
+	minCycle = population[0];
 	//sort population by cycle distance (only first 100% part)
 	//std::sort has nlog(n) complexity
 	std::sort(population.begin(), population.begin() + populationSize - 1, [&](std::vector<int> vec1, std::vector<int> vec2){
@@ -663,6 +663,7 @@ void matrix::printCycle(std::vector<int> cycle)
 		std::cout << element << " <-> ";
 	}
 	std::cout << std::endl;
+	std::cout << "Distance: " << distance(cycle) << std::endl;
 }
 
 void matrix::addNVertex(int n)
@@ -1056,7 +1057,7 @@ std::vector<int> matrix::geneticAlgorithmInit()
 	const int generations = 20;
 	const int maxTime = 10000; //ms
 	std::vector<int> minCycle(populationSize); 
-	geneticAlgorithm(populationSize, generations, maxTime, minCycle);
+	geneticAlgorithm(50, 20, maxTime, minCycle);
 	return minCycle;
 }
 
