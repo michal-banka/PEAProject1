@@ -27,8 +27,10 @@ private:
 	void simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin, double stopTime, neighbourhoodType neighbourhoodType);
 	double getTemperatureStartAverage(int samplesSize);
 	double getTemperatureStartMax(int samplesSize);
+	
 	//Project3
-	void geneticAlgorithm(const int populationSize, int generations, double stopTime, std::vector<int>& minCycle);
+	void geneticAlgorithm(int populationSize, int generations, double crossingProbability, double muttionProbability,
+		double stopTime, std::vector<int>& minCycle);
 	std::vector<int> crossingHalfes(std::vector<int> parent1, std::vector<int> parent2);
 	std::vector<int> mutationRandom(std::vector<int> parent, int levelsOfMutation);
 	
