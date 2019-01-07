@@ -313,7 +313,7 @@ void matrix::bruteForce(std::vector<int> cycle, int& minDist, std::vector<int>& 
 }
 
 void matrix::simulatedAnnealing(std::vector<int> cycle, std::vector<int>& cycleMin, double tempStart, double tempMin,
-	double stopTime, neighbourhoodType neighbourhoodType)
+	double stopTime, NeighbourhoodType neighbourhoodType)
 {
 	//Neighbourhood - group of cycles that can be created from transformation of parent cycle
 	//Neighbourhood Size - number of possible unique transformations of parent cycle,
@@ -406,91 +406,7 @@ double matrix::getTemperatureStartMax(int samplesSize)
 	return maxTemp;
 }
 
-void matrix::geneticAlgorithm(int populationSize, int generations,double crossingProbability, double muttionProbability,
-	double stopTime, std::vector<int>& minCycle)
-{
-	//todo - change population.size();
-	//todo - wymyslic sposob przechowywania dzieci
-	//Population must always be bigger than 3
-	if (populationSize < 4) populationSize = 4;
 
-	int generation = 0;
-	TimeCounter time;
-	time.start();
-
-	std::vector<std::vector<int>> population (populationSize + populationSize/2 + populationSize/4);
-	for (int i = 0; i < populationSize; i++)
-	{
-		population[i] = randomCycle();
-	}
-	minCycle = population[0];
-	//sort population by cycle distance (only first 100% part)
-	//std::sort has nlog(n) complexity
-	std::sort(population.begin(), population.begin() + populationSize - 1, [&](std::vector<int> vec1, std::vector<int> vec2){
-		return (distance(vec1) < distance(vec2));
-	});
-
-	//repeat 'generations' times
-	while(time.stop() < stopTime && generation++ < generations)
-	{
-		//every cycle in population has some probability to cross and some to mutate
-		for (int i = 0; i < populationSize; i++)
-		{
-			//if random value is in [0;crossingProbability] range then cross
-			if ((double)rand()/INT_MAX < crossingProbability)
-			{
-				//random second parent
-				int parent = rand() % populationSize / 2;
-
-				while (parent == i)
-				{
-					parent = rand() % populationSize / 2;
-				}
-
-				//cross and add child to population
-				population[populationSize + i] = crossingHalfes(population[idx1], population[idx2]);
-			}
-		}
-
-		//VERSION 1.
-		/*//top 50% of population will be crossed with each other (randomly chosen one of parents)
-		for (int i = 0; i < populationSize / 2; i++)
-		{
-			//rand indexes to cross
-			int idx1 = i;
-			int idx2 = rand() % populationSize / 2;
-
-			while (idx1 == idx2)
-			{
-				idx2 = rand() % populationSize / 2;
-			}
-
-			//cross parents
-			population[populationSize + i] = crossingHalfes(population[idx1], population[idx2]);
-		}
-
-		//top 25% of population will be mutated
-		for (int i = 0; i < populationSize / 4; i++)
-		{
-			//mutate 
-			population[populationSize + populationSize / 2 + i] = mutationRandom(population[i], 1);
-		}*/
-
-		//sort again but this time whole population array 
-		//so better results from mutation and crossing will move to first (100%) part of population 
-		//and will be considered in further generations during mutations and crossing
-		//therefore the worst results will move from first part to next and will be totaly replaced in next generation
-		std::sort(population.begin(), population.end(), [&](std::vector<int> vec1, std::vector<int> vec2) {
-			return (distance(vec1) < distance(vec2));
-		});
-
-		//if the best known cycle is worse then swap
-		if (distance(minCycle) > distance(population[0]))
-		{
-			minCycle = population[0];
-		}
-	}
-}
 
 std::vector<int> matrix::crossingHalfes(std::vector<int> parent1, std::vector<int> parent2)
 {
@@ -570,7 +486,7 @@ std::vector<int> matrix::randomCycle()
 	return cycle;
 }
 
-std::vector<int> matrix::getRandomTransformationOfVector(std::vector<int> vector , neighbourhoodType type)
+std::vector<int> matrix::getRandomTransformationOfVector(std::vector<int> vector , NeighbourhoodType type)
 {
 	//rand elements
 	int idx1 = rand() % vector.size();
@@ -1055,7 +971,7 @@ std::vector<int> matrix::simulatedAnnealingInit()
 	return minCycle;
 }
 
-std::vector<int> matrix::simulatedAnnealingInit(neighbourhoodType type, double maxTime, TimeCounter& counter)
+std::vector<int> matrix::simulatedAnnealingInit(NeighbourhoodType type, double maxTime, TimeCounter& counter)
 {
 	std::vector<int> minCycle;
 	counter.start();
@@ -1070,7 +986,129 @@ std::vector<int> matrix::geneticAlgorithmInit()
 	const int generations = 20;
 	const int maxTime = 10000; //ms
 	std::vector<int> minCycle(populationSize); 
-	geneticAlgorithm(50, 20, maxTime, minCycle);
+	return minCycle;
+}
+
+std::vector<int> matrix::geneticAlgorithm(int populationSize, int generations, double crossingProbability,
+                                          double mutationProbability, double stopTime, SelectionMethod selectionMethod)
+{
+	//generation number indicatior
+	int generation = 0;
+
+	//timer to count time of algorithm
+	TimeCounter time;
+	time.start();
+
+	//calculate size of population vector
+	int sizeVec = 0;
+	if (selectionMethod == TOP)
+	{
+		sizeVec = populationSize + populationSize / 2 + populationSize / 4;
+	}
+	else if (selectionMethod == PROBABILITY)
+	{
+		sizeVec = populationSize;
+	}
+
+	//init and fill population
+	std::vector<std::vector<int>> population(sizeVec);
+	for (int i = 0; i < populationSize; i++)
+	{
+		population[i] = randomCycle();
+	}
+
+	//set minCycle
+	std::vector<int> minCycle = population[0];
+
+	//sort population by cycle distance 
+	//std::sort has nlog(n) complexity
+	std::sort(population.begin(), population.begin() + populationSize, [&](std::vector<int> vec1, std::vector<int> vec2) {
+		return (distance(vec1) < distance(vec2));
+	});
+
+	//repeat 'generations' times or finish after stopTime
+	while (time.stop() < stopTime && generation < generations)
+	{
+		if (selectionMethod == PROBABILITY)
+		{
+			//every cycle in population has some probability to cross and some to mutate
+			for (int i = 0; i < populationSize; i++)
+			{
+				//get random probability from [0;1] range
+				const int probability = (double)rand() / INT_MAX;
+
+				//if probability is in [0;crossingProbability] range then cross this parent
+				if (probability < crossingProbability)
+				{
+					//random second parent
+					int parent = rand() % populationSize;
+					while (parent == i)
+					{
+						parent = rand() % populationSize;
+					}
+
+					//cross and add child to population
+					//todo - add switching methods of crossing if more than 1
+					population.push_back(crossingHalfes(population[i], population[parent]));
+				}
+
+				//if probability is in [0;mutateProbability] range then mutate this cycle
+				if (probability < crossingProbability)
+				{
+					//mutate and add child to population
+					//mutate up to ~0 - 10% of vertices (5% might be swaped with another 5% so 10% will change place)
+					//todo - add switching methods of mutation if more than 1
+					population.push_back(mutationRandom(population[i], population[i].size()*0.05));
+				}
+			}
+		}
+		else if (selectionMethod == TOP)
+		{
+
+			//top 50% of population will be crossed with each other (randomly chosen one of parents)
+			for (int i = 0; i < populationSize / 2; i++)
+			{
+				//rand indexes to cross
+				int idx1 = i;
+				int idx2 = rand() % populationSize / 2;
+
+				while (idx1 == idx2)
+				{
+					idx2 = rand() % populationSize / 2;
+				}
+
+				//cross parents
+				population[populationSize + i] = crossingHalfes(population[idx1], population[idx2]);
+			}
+
+			//top 25% of population will be mutated
+			for (int i = 0; i < populationSize / 4; i++)
+			{
+				//mutate up to ~0 - 10% of vertices (5% might be swaped with another 5% so 10% will change place)
+				//todo - add switching methods of mutation if more than 1
+				population[populationSize + populationSize / 2 + i] = mutationRandom(population[i], population[i].size()*0.05);
+			}
+		}
+
+		//sort again but this time whole population vector
+		//( in TOP selection method ! ) so better results from mutation and crossing will move to first (100%) part of population 
+		//and will be considered in further generations during mutations and crossing
+		//therefore the worst results will move from first part to next and will be totaly replaced in next generation
+		std::sort(population.begin(), population.end(), [&](std::vector<int> vec1, std::vector<int> vec2) {
+			return (distance(vec1) < distance(vec2));
+		});
+
+		if (selectionMethod == PROBABILITY) population.resize(populationSize);
+
+		//if the best known cycle is worse then swap
+		if (distance(minCycle) > distance(population[0]))
+		{
+			minCycle = population[0];
+		}
+		//go to next generation
+		generation++;
+	}
+
 	return minCycle;
 }
 
