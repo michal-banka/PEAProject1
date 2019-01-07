@@ -407,7 +407,7 @@ void menu::mainMenu2()
 	const int choices = 7;
 	double time = 10.0;
 	//enum is located in matrix.h
-	neighbourhoodType type = SWAP;
+	NeighbourhoodType type = SWAP;
 	std::vector<int> minCycle;
 
 	std::string filename;
@@ -418,8 +418,8 @@ void menu::mainMenu2()
 		std::cout << "1. Show matrix " << std::endl;
 		std::cout << "2. Create graph from file ..." << std::endl;
 		std::cout << "3. Set time for stop criterion (now: "<< time  << ") ..." << std::endl;
-		std::cout << "4. Neighbourhood type choice (now: "<< (type == neighbourhoodType::SWAP ? "SWAP" :
-														type == neighbourhoodType::INSERT ? "INSERT" : "INVERT")  << ") ... " << std::endl;
+		std::cout << "4. Neighbourhood type choice (now: "<< (type == NeighbourhoodType::SWAP ? "SWAP" :
+														type == NeighbourhoodType::INSERT ? "INSERT" : "INVERT")  << ") ... " << std::endl;
 		std::cout << "5. Run Simulated Annealing" << std::endl;
 		std::cout << "6. Run tests" << std::endl;
 

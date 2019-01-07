@@ -1,5 +1,7 @@
 #pragma once
 #include "Matrix.h"
+#include "NeighbourhoodTypeEnum.h"
+#include "SelectionMethodEnum.h"
 
 class menu
 {
