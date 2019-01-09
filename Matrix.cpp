@@ -1112,6 +1112,18 @@ std::vector<int> matrix::geneticAlgorithm(int populationSize, int generations, d
 	return minCycle;
 }
 
+std::vector<int> matrix::randomSearch(int n)
+{
+	std::vector<int> minimum = randomCycle();
+	for (int i = 0 ; i < n - 1; i++)
+	{
+		std::vector<int> cycle = randomCycle();
+		if (distance(cycle) < distance(minimum)) minimum = cycle;
+	}
+
+	return minimum;
+}
+
 matrix& matrix::operator=(const matrix& m)
 {
 	if (this == &m)

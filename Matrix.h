@@ -77,5 +77,8 @@ public:
 	std::vector<int> geneticAlgorithm(int populationSize, int generations, double crossingProbability,
 	                                  double mutationProbability, double stopTime, SelectionMethod selectionMethod);
 
+	//others
+	std::vector<int> randomSearch(int n);
+
 	matrix& operator= (const matrix& m);
 };
