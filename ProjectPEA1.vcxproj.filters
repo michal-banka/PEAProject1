@@ -41,6 +41,12 @@
     <ClInclude Include="TimeCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NeighbourhoodTypeEnum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectionMethodEnum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="17.txt" />

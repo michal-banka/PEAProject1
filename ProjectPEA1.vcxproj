@@ -148,6 +148,8 @@
     <ClInclude Include="Libs.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="NeighbourhoodTypeEnum.h" />
+    <ClInclude Include="SelectionMethodEnum.h" />
     <ClInclude Include="TimeCounter.h" />
   </ItemGroup>
   <ItemGroup>
