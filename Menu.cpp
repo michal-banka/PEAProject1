@@ -699,6 +699,8 @@ void menu::testsGA()
 
 	//TOP
 	k = 0;
+	results.resize(0);
+	times.resize(0);
 	for (int size = 50; size < 333; size += 50)
 	{
 		results[k].push_back(size);
@@ -723,6 +725,8 @@ void menu::testsGA()
 
 	//PROB
 	k = 0;
+	results.resize(0);
+	times.resize(0);
 	for (int size = 50; size < 333; size += 50)
 	{
 		results[k].push_back(size);
@@ -742,6 +746,8 @@ void menu::testsGA()
 
 	//TOP
 	k = 0;
+	results.resize(0);
+	times.resize(0);
 	for (int size = 50; size < 333; size += 50)
 	{
 		results[k].push_back(size);
@@ -763,6 +769,8 @@ void menu::testsGA()
 	graph.fillFromFile("171.txt");
 	//PROB
 	k = 0;
+	results.resize(0);
+	times.resize(0);
 	for (int size = 50; size < 333; size += 50)
 	{
 		results[k].push_back(size);
@@ -782,6 +790,8 @@ void menu::testsGA()
 
 	//TOP
 	k = 0;
+	results.resize(0);
+	times.resize(0);
 	for (int size = 50; size < 333; size += 50)
 	{
 		results[k].push_back(size);
