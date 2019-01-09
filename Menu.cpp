@@ -558,7 +558,7 @@ void menu::mainMenu3()
 
 	do
 	{
-		//if (choice1 != 1 && choice1 <= 8) system("cls");
+		if (choice1 != 1 && choice1 < 9) system("cls");
 		std::cout << std::endl << "==== MAIN MENU ====" << std::endl;
 		std::cout << "1. Show matrix (" << (filename.empty() ? "empty" : filename) << ")" << std::endl;
 		std::cout << "2. Create graph from file ..." << std::endl;
@@ -620,7 +620,7 @@ void menu::mainMenu3()
 
 			if (choice1 == 1) type = PROBABILITY;
 			else if (choice1 == 2) type = TOP;
-
+			system("cls");
 			break;
 		case 5:
 			do
@@ -667,4 +667,121 @@ void menu::mainMenu3()
 			break;
 		}
 	} while (choice1 != choices);
+}
+
+void menu::testsGA()
+{
+	TimeCounter timeCounter;
+	std::vector<double> times(50);
+	std::vector<int> results(50);
+
+	//34 x 34 matrix
+	graph.fillFromFile("34.txt");
+
+	//PROB
+	for (int size = 50; size < 333; size += 50)
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			results[i] = graph.distance(graph.geneticAlgorithm(size,100,0.9,0.1,999,PROBABILITY, timeCounter));
+			times[i] = timeCounter.getTime();
+			system("cls");
+			std::cout << "34 x 34 matrix - Genetic alg. - "<< size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+
+		}
+
+		saveVectorToFile(times, "34GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_TIMES");
+		saveVectorToFile(results, "34GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_RESULTS");
+	}
+
+	//TOP
+	for (int size = 50; size < 333; size += 50)
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			results[i] = graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, TOP, timeCounter));
+			times[i] = timeCounter.getTime();
+			system("cls");
+			std::cout << "34 x 34 matrix - Genetic alg. - " << size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+
+		}
+
+		saveVectorToFile(times, "34GRAPH_" + std::to_string(size) + "POPUL_TOP_TIMES");
+		saveVectorToFile(results, "34GRAPH_" + std::to_string(size) + "POPUL_TOP_RESULTS");
+	}
+
+
+
+	//70 x 70 matrix
+	graph.fillFromFile("70.txt");
+
+	//PROB
+	for (int size = 50; size < 333; size += 50)
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			results[i] = graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, PROBABILITY, timeCounter));
+			times[i] = timeCounter.getTime();
+			system("cls");
+			std::cout << "70 x 70 matrix - Genetic alg. - " << size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+
+		}
+
+		saveVectorToFile(times, "70GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_TIMES");
+		saveVectorToFile(results, "70GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_RESULTS");
+	}
+
+	//TOP
+	for (int size = 50; size < 333; size += 50)
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			results[i] = graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, TOP, timeCounter));
+			times[i] = timeCounter.getTime();
+			system("cls");
+			std::cout << "70 x 70 matrix - Genetic alg. - " << size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+
+		}
+
+		saveVectorToFile(times, "70GRAPH_" + std::to_string(size) + "POPUL_TOP_TIMES");
+		saveVectorToFile(results, "70GRAPH_" + std::to_string(size) + "POPUL_TOP_RESULTS");
+	}
+
+	//171 x 171 matrix
+	graph.fillFromFile("171.txt");
+	//PROB
+	for (int size = 50; size < 333; size += 50)
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			results[i] = graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, PROBABILITY, timeCounter));
+			times[i] = timeCounter.getTime();
+			system("cls");
+			std::cout << "171 x 171 matrix - Genetic alg. - " << size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+
+		}
+
+		saveVectorToFile(times, "171GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_TIMES");
+		saveVectorToFile(results, "171GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_RESULTS");
+	}
+
+	//TOP
+	for (int size = 50; size < 333; size += 50)
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			results[i] = graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, TOP, timeCounter));
+			times[i] = timeCounter.getTime();
+			system("cls");
+			std::cout << "171 x 171 matrix - Genetic alg. - " << size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
+
+		}
+
+		saveVectorToFile(times, "171GRAPH_" + std::to_string(size) + "POPUL_TOP_TIMES");
+		saveVectorToFile(results, "171GRAPH_" + std::to_string(size) + "POPUL_TOP_RESULTS");
+	}
+
+	system("cls");
+	std::cout << "171 x 171 matrix - Genetic alg. - 300 - PROBABILITY - working ... [" << 100 << "% done]" << std::endl;
+
 }
