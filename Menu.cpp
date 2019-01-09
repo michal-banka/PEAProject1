@@ -837,9 +837,9 @@ void menu::saveVectorToFile(std::vector<std::vector<double>> vector, std::string
 	{
 		for (std::vector<double> element : vector)
 		{
-			for (int elementInt : element)
+			for (double elementD : element)
 			{
-				write << elementInt << " ";
+				write << elementD << " ";
 			}
 			write << std::endl;
 		}
