@@ -73,7 +73,9 @@ public:
 	//std::vector<int> tabuSearch();
 
 	//Project 3 algorithms
-	std::vector<int> geneticAlgorithmInit();
+	std::vector<int> geneticAlgorithm();
+	std::vector<int> geneticAlgorithm(int populationSize, int generations, double crossingProbability, double mutationProbability, double stopTime, SelectionMethod
+	                                  selectionMethod, TimeCounter& counter);
 	std::vector<int> geneticAlgorithm(int populationSize, int generations, double crossingProbability,
 	                                  double mutationProbability, double stopTime, SelectionMethod selectionMethod);
 

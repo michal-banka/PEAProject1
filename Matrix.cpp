@@ -980,12 +980,19 @@ std::vector<int> matrix::simulatedAnnealingInit(NeighbourhoodType type, double m
 	return minCycle;
 }
 
-std::vector<int> matrix::geneticAlgorithmInit()
+std::vector<int> matrix::geneticAlgorithm()
 {
-	const int populationSize = 50;
-	const int generations = 20;
-	const int maxTime = 10000; //ms
-	std::vector<int> minCycle(populationSize); 
+	return geneticAlgorithm(50, 50, 0.9, 0.1, 10, PROBABILITY);
+}
+
+std::vector<int> matrix::geneticAlgorithm(int populationSize, int generations, double crossingProbability,
+	double mutationProbability, double stopTime, SelectionMethod selectionMethod, TimeCounter& counter)
+{
+	std::vector<int> minCycle(populationSize);
+	counter.start();
+	minCycle = geneticAlgorithm(populationSize, generations, crossingProbability, mutationProbability, stopTime, selectionMethod);
+	counter.stop();
+
 	return minCycle;
 }
 
