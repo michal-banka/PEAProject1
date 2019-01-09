@@ -23,5 +23,9 @@ public:
 	void printCycle(std::string title, std::vector<int> cycle);
 	void saveVectorToFile(std::vector<double> vector, std::string filename);
 	void saveVectorToFile(std::vector<int> vector, std::string filename);
+
+	//Project 3
+	void mainMenu3();
+	void testsGA();
 };
 

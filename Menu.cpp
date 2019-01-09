@@ -406,7 +406,6 @@ void menu::mainMenu2()
 	int choice1 = 0;
 	const int choices = 7;
 	double time = 10.0;
-	//enum is located in matrix.h
 	NeighbourhoodType type = SWAP;
 	std::vector<int> minCycle;
 
@@ -538,4 +537,134 @@ void menu::saveVectorToFile(std::vector<int> vector, std::string filename)
 		std::cin.get();
 	}
 	write.close();
+}
+
+void menu::mainMenu3()
+{
+	graph = matrix();
+
+	TimeCounter counter;
+	int choice1 = 0;
+	const int choices = 11;
+	double time = 10.0;
+	int populationSize = 100;
+	int generationsNumber = 100;
+	double crossingProbability = 0.9;
+	double mutationProbability = 0.1;
+	SelectionMethod type = PROBABILITY;
+	
+	std::vector<int> minCycle;
+	std::string filename;
+
+	do
+	{
+		//if (choice1 != 1 && choice1 <= 8) system("cls");
+		std::cout << std::endl << "==== MAIN MENU ====" << std::endl;
+		std::cout << "1. Show matrix (" << (filename.empty() ? "empty" : filename) << ")" << std::endl;
+		std::cout << "2. Create graph from file ..." << std::endl;
+		std::cout << "3. Set time for stop criterion (now: " << time << ") ..." << std::endl;
+		std::cout << "4. Selection type choice (now: " << (type == SelectionMethod::PROBABILITY ? "PROBABILITY" : "TOP") << ") ..." << std::endl;
+		std::cout << "5. Set population size (now: " << populationSize <<") ..." << std::endl;
+		std::cout << "6. Set generations number (now: " << generationsNumber << ") ..." << std::endl;
+		std::cout << "7. Set crossing probability (now: " << crossingProbability << ") ..." << std::endl;
+		std::cout << "8. Set mutation probability (now: " << mutationProbability << ") ..." << std::endl;
+		std::cout << "9. Run Genetic Algorithm" << std::endl;
+		std::cout << "10. Run tests" << std::endl;
+
+		std::cout << choices << ". Quit." << std::endl;
+
+		do
+		{
+			std::cout << "Your choice: ";
+			std::cin >> choice1;
+			std::cin.get();
+			std::cout << std::endl;
+		} while (choice1 <= 0 || choice1 > choices);
+
+		switch (choice1)
+		{
+		case 1:
+			graph.show();
+			break;
+
+		case 2:
+			do
+			{
+				std::cout << "Insert filename with file type: ";
+				std::cin >> filename;
+				std::cin.get();
+			} while (filename.empty());
+
+			graph.fillFromFile(filename);
+			break;
+
+		case 3:
+			do
+			{
+				std::cout << "Insert time in seconds: ";
+				std::cin >> time;
+				std::cin.get();
+			} while (time <= 0.0);
+			break;
+
+		case 4:
+			std::cout << "1. \"PROBABILITY\" selection type " << std::endl;
+			std::cout << "2. \"TOP\" selection type" << std::endl;
+			std::cout << "3. Back ..." << std::endl;
+			do
+			{
+				std::cout << "Insert number of type: ";
+				std::cin >> choice1;
+				std::cin.get();
+			} while (choice1 <= 0 || choice1 > 4);
+
+			if (choice1 == 1) type = PROBABILITY;
+			else if (choice1 == 2) type = TOP;
+
+			break;
+		case 5:
+			do
+			{
+				std::cout << "Insert population size: ";
+				std::cin >> populationSize;
+				std::cin.get();
+			} while (populationSize <= 0);
+			break;
+			/*std::cout << "Calculating..." << std::endl;
+			minCycle = graph.simulatedAnnealingInit();
+			printCycle("Cycle - Sim. Annealing", minCycle);
+			std::cout << "Distance of cycle: " << graph.distance(minCycle) << std::endl;;
+			break;*/
+		case 6:
+			do
+			{
+				std::cout << "Insert generations number: ";
+				std::cin >> generationsNumber;
+				std::cin.get();
+			} while (generationsNumber <= 0);
+			break;
+		case 7:
+			std::cout << "Insert crossing probability: ";
+			std::cin >> crossingProbability;
+			std::cin.get();
+			break;
+
+		case 8:
+			std::cout << "Insert mutation probability: ";
+			std::cin >> mutationProbability;
+			std::cin.get();
+			break;
+
+		case 9:
+			minCycle = graph.geneticAlgorithm(populationSize,generationsNumber,crossingProbability,mutationProbability,time,type, counter);
+			printCycle("Genetic algorithm",minCycle);
+			std::cout << "Distance: " << graph.distance(minCycle) << std::endl;
+			std::cout << "Time: " << counter.getTime() << std::endl;
+			break;
+		case 10:
+			testsGA();
+		default:
+			break;
+		}
+	} while (choice1 != choices);
 }
