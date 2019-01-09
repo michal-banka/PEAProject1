@@ -27,5 +27,7 @@ public:
 	//Project 3
 	void mainMenu3();
 	void testsGA();
+	void saveVectorToFile(std::vector<std::vector<int>> vector, std::string filename);
+	void saveVectorToFile(std::vector<std::vector<double>> vector, std::string filename);
 };
 

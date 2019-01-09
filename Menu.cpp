@@ -672,43 +672,49 @@ void menu::mainMenu3()
 void menu::testsGA()
 {
 	TimeCounter timeCounter;
-	std::vector<double> times(50);
-	std::vector<int> results(50);
-
+	std::vector<std::vector<double>> times(50 + 1);
+	std::vector<std::vector<int>> results(50 + 1);
+	int k = 0;
 	//34 x 34 matrix
 	graph.fillFromFile("34.txt");
 
 	//PROB
+	k = 0;
 	for (int size = 50; size < 333; size += 50)
 	{
-		for (int i = 0; i < 50; i++)
+		results[k].push_back(size);
+		times[k].push_back(size);
+
+		for (int i = 1; i < 51; i++)
 		{
-			results[i] = graph.distance(graph.geneticAlgorithm(size,100,0.9,0.1,999,PROBABILITY, timeCounter));
-			times[i] = timeCounter.getTime();
+			results[k].push_back(graph.distance(graph.geneticAlgorithm(size,100,0.9,0.1,999,PROBABILITY, timeCounter)));
+			times[k].push_back(timeCounter.getTime());
 			system("cls");
 			std::cout << "34 x 34 matrix - Genetic alg. - "<< size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
-
 		}
-
-		saveVectorToFile(times, "34GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_TIMES");
-		saveVectorToFile(results, "34GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_RESULTS");
+		k++;
 	}
+	saveVectorToFile(times, "34GRAPH_PROBABILITY_TIMES");
+	saveVectorToFile(results, "34GRAPH_PROBABILITY_RESULTS");
 
 	//TOP
+	k = 0;
 	for (int size = 50; size < 333; size += 50)
 	{
-		for (int i = 0; i < 50; i++)
+		results[k].push_back(size);
+		times[k].push_back(size);
+
+		for (int i = 1; i < 51; i++)
 		{
-			results[i] = graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, TOP, timeCounter));
-			times[i] = timeCounter.getTime();
+			results[k].push_back(graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, TOP, timeCounter)));
+			times[k].push_back(timeCounter.getTime());
 			system("cls");
-			std::cout << "34 x 34 matrix - Genetic alg. - " << size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
-
+			std::cout << "34 x 34 matrix - Genetic alg. - " << size << " - TOP - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
 		}
-
-		saveVectorToFile(times, "34GRAPH_" + std::to_string(size) + "POPUL_TOP_TIMES");
-		saveVectorToFile(results, "34GRAPH_" + std::to_string(size) + "POPUL_TOP_RESULTS");
+		k++;
 	}
+	saveVectorToFile(times, "34GRAPH_TOP_TIMES");
+	saveVectorToFile(results, "34GRAPH_TOP_RESULTS");
 
 
 
@@ -716,72 +722,132 @@ void menu::testsGA()
 	graph.fillFromFile("70.txt");
 
 	//PROB
+	k = 0;
 	for (int size = 50; size < 333; size += 50)
 	{
-		for (int i = 0; i < 50; i++)
+		results[k].push_back(size);
+		times[k].push_back(size);
+
+		for (int i = 1; i < 51; i++)
 		{
-			results[i] = graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, PROBABILITY, timeCounter));
-			times[i] = timeCounter.getTime();
+			results[k].push_back(graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, PROBABILITY, timeCounter)));
+			times[k].push_back(timeCounter.getTime());
 			system("cls");
 			std::cout << "70 x 70 matrix - Genetic alg. - " << size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
-
 		}
-
-		saveVectorToFile(times, "70GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_TIMES");
-		saveVectorToFile(results, "70GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_RESULTS");
+		k++;
 	}
+	saveVectorToFile(times, "70GRAPH_PROBABILITY_TIMES");
+	saveVectorToFile(results, "70GRAPH_PROBABILITY_RESULTS");
 
 	//TOP
+	k = 0;
 	for (int size = 50; size < 333; size += 50)
 	{
-		for (int i = 0; i < 50; i++)
+		results[k].push_back(size);
+		times[k].push_back(size);
+
+		for (int i = 1; i < 51; i++)
 		{
-			results[i] = graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, TOP, timeCounter));
-			times[i] = timeCounter.getTime();
+			results[k].push_back(graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, TOP, timeCounter)));
+			times[k].push_back(timeCounter.getTime());
 			system("cls");
-			std::cout << "70 x 70 matrix - Genetic alg. - " << size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
-
+			std::cout << "70 x 70 matrix - Genetic alg. - " << size << " - TOP - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
 		}
-
-		saveVectorToFile(times, "70GRAPH_" + std::to_string(size) + "POPUL_TOP_TIMES");
-		saveVectorToFile(results, "70GRAPH_" + std::to_string(size) + "POPUL_TOP_RESULTS");
+		k++;
 	}
+	saveVectorToFile(times, "70GRAPH_TOP_TIMES");
+	saveVectorToFile(results, "70GRAPH_TOP_RESULTS");
 
 	//171 x 171 matrix
 	graph.fillFromFile("171.txt");
 	//PROB
+	k = 0;
 	for (int size = 50; size < 333; size += 50)
 	{
-		for (int i = 0; i < 50; i++)
+		results[k].push_back(size);
+		times[k].push_back(size);
+
+		for (int i = 1; i < 51; i++)
 		{
-			results[i] = graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, PROBABILITY, timeCounter));
-			times[i] = timeCounter.getTime();
+			results[k].push_back(graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, PROBABILITY, timeCounter)));
+			times[k].push_back(timeCounter.getTime());
 			system("cls");
 			std::cout << "171 x 171 matrix - Genetic alg. - " << size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
-
 		}
-
-		saveVectorToFile(times, "171GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_TIMES");
-		saveVectorToFile(results, "171GRAPH_" + std::to_string(size) + "POPUL_PROBABILITY_RESULTS");
+		k++;
 	}
+	saveVectorToFile(times, "171GRAPH_PROBABILITY_TIMES");
+	saveVectorToFile(results, "171GRAPH_PROBABILITY_RESULTS");
 
 	//TOP
+	k = 0;
 	for (int size = 50; size < 333; size += 50)
 	{
-		for (int i = 0; i < 50; i++)
+		results[k].push_back(size);
+		times[k].push_back(size);
+
+		for (int i = 1; i < 51; i++)
 		{
-			results[i] = graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, TOP, timeCounter));
-			times[i] = timeCounter.getTime();
+			results[k].push_back(graph.distance(graph.geneticAlgorithm(size, 100, 0.9, 0.1, 999, TOP, timeCounter)));
+			times[k].push_back(timeCounter.getTime());
 			system("cls");
-			std::cout << "171 x 171 matrix - Genetic alg. - " << size << " - PROBABILITY - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
-
+			std::cout << "70 x 70 matrix - Genetic alg. - " << size << " - TOP - working ... [" << static_cast<double>(i / 50.0 * 100.0) << "% done]" << std::endl;
 		}
-
-		saveVectorToFile(times, "171GRAPH_" + std::to_string(size) + "POPUL_TOP_TIMES");
-		saveVectorToFile(results, "171GRAPH_" + std::to_string(size) + "POPUL_TOP_RESULTS");
+		k++;
 	}
+	saveVectorToFile(times, "171GRAPH_TOP_TIMES");
+	saveVectorToFile(results, "171GRAPH_TOP_RESULTS");
 
 	system("cls");
 	std::cout << "171 x 171 matrix - Genetic alg. - 300 - PROBABILITY - working ... [" << 100 << "% done]" << std::endl;
 
+}
+
+void menu::saveVectorToFile(std::vector<std::vector<int>> vector, std::string filename)
+{
+	std::string generatedFilesFolderPath = "results\\";
+	std::ofstream write;
+	write.open(generatedFilesFolderPath + filename + ".txt");
+	if (write.is_open())
+	{
+		for (std::vector<int> element : vector)
+		{
+			for (int elementInt : element)
+			{
+				write << elementInt << " ";
+			}
+			write << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "Error while opening file: " << generatedFilesFolderPath + filename + ".txt" << std::endl;
+		std::cin.get();
+	}
+	write.close();
+}
+
+void menu::saveVectorToFile(std::vector<std::vector<double>> vector, std::string filename)
+{
+	std::string generatedFilesFolderPath = "results\\";
+	std::ofstream write;
+	write.open(generatedFilesFolderPath + filename + ".txt");
+	if (write.is_open())
+	{
+		for (std::vector<double> element : vector)
+		{
+			for (int elementInt : element)
+			{
+				write << elementInt << " ";
+			}
+			write << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "Error while opening file: " << generatedFilesFolderPath + filename + ".txt" << std::endl;
+		std::cin.get();
+	}
+	write.close();
 }
